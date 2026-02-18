@@ -1,327 +1,578 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Momma's Millionaire | The Tradition of Financial Wisdom</title>
+    <title>Momma's Millionaire | Financial OS v3.6 Premium</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
-            --oxford-green: #052e16;
-            --heritage-gold: #c5a059;
-            --paper-cream: #fdfdfc;
-            --ink-black: #1a1a1a;
+            --bg-deep: #030406;
+            --card-bg: #0b0d11;
+            --bright-blue: #3b82f6;
+            --bright-teal: #2dd4bf;
+            --bright-purple: #a855f7;
+            --border-muted: rgba(255, 255, 255, 0.08);
         }
 
         body {
-            font-family: 'Playfair Display', serif;
-            background-color: var(--paper-cream);
-            color: var(--ink-black);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f0f6fc;
             scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        h1, h2, h3, .heading-font {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+        nav {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+            background: rgba(3, 4, 6, 0.85);
         }
 
-        .sans-font {
-            font-family: 'Montserrat', sans-serif;
-            letter-spacing: 0.05em;
+        .border-glow-wrapper {
+            position: relative;
+            border-radius: 32px;
+            padding: 1.5px;
+            background: var(--border-muted);
+            transition: background 0.5s ease;
+            overflow: hidden;
         }
 
-        .hero-gradient {
-            background: linear-gradient(to bottom, #fdfdfc 0%, #f4f4f0 100%);
+        .border-glow-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -150%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                var(--bright-blue) 90deg,
+                var(--bright-teal) 180deg,
+                var(--bright-purple) 270deg,
+                transparent 360deg
+            );
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            animation: rotateGlow 6s linear infinite;
         }
 
-        .border-elegant {
-            border: 1px solid rgba(197, 160, 89, 0.3);
-        }
+        .border-glow-wrapper:hover::before { opacity: 1; }
+        .border-glow-wrapper:hover { background: transparent; }
 
-        .btn-heritage {
-            background-color: var(--oxford-green);
-            color: white;
-            font-family: 'Cinzel', serif;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.2em;
-            border: 1px solid var(--oxford-green);
-        }
-
-        .btn-heritage:hover {
-            background-color: transparent;
-            color: var(--oxford-green);
-            box-shadow: 0 10px 30px rgba(5, 46, 22, 0.1);
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .card-inner {
-            background: white;
-            border: 1px solid #e5e5e0;
-            transition: all 0.5s ease;
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 31px;
+            z-index: 1;
+            padding: 2.5rem;
+            height: 100%;
         }
 
-        .card-inner:hover {
-            border-color: var(--heritage-gold);
-            transform: translateY(-5px);
+        .mini-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .mini-card:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: scale(1.02);
         }
 
-        /* Sophisticated Pattern Overlay */
-        .pattern-bg {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-46-45c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm58 33c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM30 6c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm44 55c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM18 54c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm76 5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM8 26c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm78 7c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-78 28c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm78 28c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM40 70c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm50 8c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM70 10c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-40 42c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z' fill='%23c5a059' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        .step-num {
+            font-weight: 900;
+            font-size: clamp(3rem, 8vw, 4.5rem);
+            background: linear-gradient(to bottom, #3b82f6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #3b82f6, #a855f7);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-premium::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            transform: scale(0);
+            transition: 0.6s ease;
+        }
+
+        .btn-premium:hover::after { transform: scale(1); }
+
+        .section-spacer { padding: 120px 0; }
+
+        .feature-tag {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-<body class="selection:bg-emerald-100">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 h-24 flex items-center">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full flex justify-between items-center">
+<body>
+    <nav class="fixed top-0 w-full z-50 backdrop-blur-2xl">
+        <div class="max-w-[1600px] mx-auto px-10 h-24 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 border-2 border-emerald-900 flex items-center justify-center rotate-45">
-                    <span class="brand-font text-xs -rotate-45 font-bold text-emerald-900">M</span>
+                <div class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center rotate-3 shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+                    <i class="fas fa-microchip text-white text-xl"></i>
                 </div>
-                <span class="font-bold text-lg tracking-[0.25em] text-emerald-900 heading-font">Momma's Millionaire</span>
+                <span class="font-black tracking-tighter text-2xl uppercase">Momma's<span class="text-blue-500">.M</span></span>
             </div>
-
-            <div class="hidden md:flex space-x-12 items-center">
-                <a href="#philosophy" class="sans-font text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:text-emerald-900 transition-colors">Philosophy</a>
-                <a href="#estate" class="sans-font text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:text-emerald-900 transition-colors">The Estate</a>
-                <a href="#manifesto" class="sans-font text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:text-emerald-900 transition-colors">Manifesto</a>
-                <button class="btn-heritage px-8 py-3.5 text-[10px] uppercase font-black">
-                    Register
+            <div class="hidden lg:flex gap-14 text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
+                <a href="#" class="hover:text-blue-400 transition">Quantum Engine</a>
+                <a href="#" class="hover:text-blue-400 transition">Asset Intelligence</a>
+                <a href="#" class="hover:text-blue-400 transition">Contact us</a>
+            </div>
+            <div class="flex items-center gap-8">
+                <button class="btn-premium text-white px-10 py-4 rounded-full text-[11px] font-black uppercase tracking-widest">
+                    GET STARTED
                 </button>
             </div>
-
-            <button class="md:hidden text-emerald-900" id="menu-btn">
-                <i class="fas fa-bars-staggered text-xl"></i>
-            </button>
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-stone-50 z-[60] flex flex-col items-center justify-center space-y-12 hidden">
-        <button class="absolute top-10 right-10 text-3xl text-emerald-900" id="close-btn">
-            <i class="fas fa-times"></i>
-        </button>
-        <a href="#philosophy" class="heading-font text-xl">Philosophy</a>
-        <a href="#estate" class="heading-font text-xl">The Estate</a>
-        <a href="#manifesto" class="heading-font text-xl">Manifesto</a>
-        <button class="btn-heritage px-12 py-5 text-sm">Join the Registry</button>
-    </div>
-
-    <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center pt-24 hero-gradient pattern-bg overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 w-full">
-            <div class="max-w-4xl">
-                <div class="inline-flex items-center gap-4 mb-10 opacity-70">
-                    <div class="h-[1px] w-12 bg-stone-400"></div>
-                    <span class="sans-font text-[10px] uppercase tracking-[0.4em] font-bold">Est. 2026</span>
+    <main class="pt-48">
+        <div class="max-w-[1600px] mx-auto px-10">
+            
+            <div class="text-center mb-32">
+                <div class="inline-block px-4 py-1 border border-blue-500/30 rounded-full text-[10px] font-bold text-blue-400 uppercase tracking-[0.4em] mb-6">
+                    Next-Gen Wealth Management
                 </div>
-
-                <h1 class="text-5xl md:text-8xl font-black text-emerald-900 mb-10 leading-[0.95] tracking-tight">
-                    The Architecture <br>
-                    <span class="italic font-normal serif-font lowercase pr-4">of</span> Generational <br>
-                    <span class="text-stone-800">Wealth.</span>
+                <h1 class="text-7xl md:text-[10rem] font-black mb-10 tracking-tighter leading-none">
+                    Momma's <span class="text-blue-600 italic">Millionaire.</span>
                 </h1>
-
-                <p class="text-lg md:text-2xl text-stone-600 max-w-2xl mb-14 leading-relaxed font-light italic">
-                    Traditional values meet modern intelligence. We equip the next generation with the financial acumen required to build, protect, and pass on a lasting legacy.
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-8">
-                    <button class="btn-heritage px-14 py-6 text-xs font-bold uppercase tracking-[0.3em]">
-                        Begin Your Education
-                    </button>
-                    <button class="px-14 py-6 text-xs font-bold uppercase tracking-[0.3em] border-stone-200 border hover:bg-white transition-all sans-font text-stone-700">
-                        View The Collection
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Classic statue/portrait silhouette hint -->
-        <div class="absolute right-[-10%] bottom-0 w-1/2 h-full opacity-10 pointer-events-none select-none hidden lg:block">
-            <i class="fas fa-landmark text-[40rem] text-emerald-900"></i>
-        </div>
-    </section>
-
-    <!-- Quote Break -->
-    <section class="py-24 bg-white border-y border-stone-100">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <span class="text-heritage-gold text-4xl italic leading-none opacity-40">"</span>
-            <p class="text-2xl md:text-4xl text-stone-800 font-light italic leading-relaxed">
-                Money is a language. Those who do not speak it fluently will always require an interpreter.
-            </p>
-            <span class="block mt-6 sans-font text-[10px] uppercase tracking-[0.5em] font-bold text-stone-400">— The Momma's Millionaire Doctrine —</span>
-        </div>
-    </section>
-
-    <!-- The Estate (Features) -->
-    <section id="estate" class="py-32 bg-stone-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="flex flex-col lg:flex-row justify-between items-end mb-24 gap-10">
-                <div class="max-w-2xl">
-                    <h2 class="text-4xl md:text-6xl font-bold mb-6 text-emerald-900 leading-tight">The Registry <br>of Tools</h2>
-                    <p class="text-stone-500 text-lg italic">A curated selection of instruments designed for clarity and precision.</p>
-                </div>
-                <div class="w-full lg:w-1/3 h-[1px] bg-stone-200 mb-6"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1px bg-stone-200 border border-stone-200">
-                <!-- Card 1 -->
-                <div class="card-inner p-12 bg-white">
-                    <span class="text-heritage-gold sans-font text-[10px] font-bold mb-8 block tracking-widest uppercase">01 / Analysis</span>
-                    <h3 class="text-xl font-bold mb-6 text-stone-800 tracking-wider">The Savings Conservatory</h3>
-                    <p class="text-stone-500 leading-relaxed font-light italic text-sm">Automated intelligence that audits your personal ledger to uncover hidden avenues for capital preservation.</p>
-                </div>
-                <!-- Card 2 -->
-                <div class="card-inner p-12 bg-white">
-                    <span class="text-heritage-gold sans-font text-[10px] font-bold mb-8 block tracking-widest uppercase">02 / Foresight</span>
-                    <h3 class="text-xl font-bold mb-6 text-stone-800 tracking-wider">Heritage Projections</h3>
-                    <p class="text-stone-500 leading-relaxed font-light italic text-sm">Visualize the long-term impact of today's discipline. A simulator that maps your wealth across decades.</p>
-                </div>
-                <!-- Card 3 -->
-                <div class="card-inner p-12 bg-white">
-                    <span class="text-heritage-gold sans-font text-[10px] font-bold mb-8 block tracking-widest uppercase">03 / Counsel</span>
-                    <h3 class="text-xl font-bold mb-6 text-stone-800 tracking-wider">Private AI Advisor</h3>
-                    <p class="text-stone-500 leading-relaxed font-light italic text-sm">A personal mentor available 24/7 to demystify global economic shifts into simple, actionable strategies.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Large Visual Callout -->
-    <section id="philosophy" class="relative py-40 bg-emerald-900 overflow-hidden">
-        <div class="pattern-bg absolute inset-0 opacity-10"></div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 grid lg:grid-cols-2 gap-20 items-center">
-            <div class="text-white">
-                <h2 class="text-4xl md:text-6xl font-bold mb-10 leading-tight">Educated <br><span class="text-heritage-gold italic font-normal serif-font lowercase">by</span> Tradition.</h2>
-                <p class="text-emerald-100 text-xl leading-relaxed font-light italic mb-12 opacity-80">
-                    We don't just teach math; we teach the philosophy of abundance. Understanding inflation, interest, and markets is the prerequisite for freedom.
-                </p>
-                <div class="space-y-8">
-                    <div class="flex items-start gap-6">
-                        <div class="w-12 h-12 border border-heritage-gold rounded-full flex items-center justify-center shrink-0">
-                            <i class="fas fa-feather text-heritage-gold text-xs"></i>
-                        </div>
-                        <div>
-                            <h4 class="heading-font text-sm font-bold tracking-widest mb-2">The Library</h4>
-                            <p class="text-emerald-100/60 text-sm italic font-light">Access a curated database of economic principles simplified for the modern student.</p>
+            <div class="grid lg:grid-cols-12 gap-10 mb-40">
+                <div class="lg:col-span-8">
+                    <div class="border-glow-wrapper">
+                        <div class="card-inner">
+                            <div class="flex justify-between items-start mb-8 pb-8 border-b border-white/5">
+                                <div>
+                                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Live Portfolio Feed</p>
+                                    <h2 class="text-6xl font-black tracking-tight" id="balance">$1,248,000.00</h2>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="bg-emerald-500/10 px-6 py-4 rounded-2xl border border-emerald-500/20 text-right">
+                                        <p class="text-[8px] text-gray-500 uppercase font-bold">Total Gain</p>
+                                        <p class="text-emerald-400 text-2xl font-black">+12.4%</p>
+                                    </div>
+                                    <div class="bg-blue-500/10 px-6 py-4 rounded-2xl border border-blue-500/20 text-right">
+                                        <p class="text-[8px] text-gray-500 uppercase font-bold">Volatility</p>
+                                        <p class="text-blue-400 text-2xl font-black">2.1%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="h-[400px] relative">
+                                <canvas id="financeChart"></canvas>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-start gap-6">
-                        <div class="w-12 h-12 border border-heritage-gold rounded-full flex items-center justify-center shrink-0">
-                            <i class="fas fa-scale-balanced text-heritage-gold text-xs"></i>
-                        </div>
-                        <div>
-                            <h4 class="heading-font text-sm font-bold tracking-widest mb-2">Market Sync</h4>
-                            <p class="text-emerald-100/60 text-sm italic font-light">Connect your virtual portfolio to real-world data feeds to practice without risk.</p>
+                </div>
+
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div class="card-inner !p-10 border border-white/5 bg-white/[0.01]">
+                        <h3 class="text-2xl font-black uppercase tracking-tight mb-4 text-blue-400">Project Mission</h3>
+                        <p class="text-gray-400 leading-relaxed font-light text-lg mb-6">
+                          We didn’t build just a tracker — we built an <span class="text-white font-bold">autonomous financial nervous system</span>. 
+                          Momma's Millionaire transforms market chaos, inflation shocks, and geopolitical shifts into precise growth vectors for your capital.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="mini-card flex items-center gap-5">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 text-xl">
+                                    <i class="fas fa-shield-halved"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black uppercase text-white">Military Grade</p>
+                                    <p class="text-[10px] text-gray-500">AES-256 Quantum-Resistant</p>
+                                </div>
+                            </div>
+                            <div class="mini-card flex items-center gap-5">
+                                <div class="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400 text-xl">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black uppercase text-white">Direct Feed</p>
+                                    <p class="text-[10px] text-gray-500">Zero-latency API Hub</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="relative">
-                <div class="aspect-[4/5] bg-stone-100 rounded-sm border-elegant p-4 overflow-hidden shadow-2xl">
-                    <div class="w-full h-full border border-stone-200 flex flex-col items-center justify-center p-12 text-center bg-white">
-                        <i class="fas fa-crown text-heritage-gold text-6xl mb-10 opacity-30"></i>
-                        <h4 class="heading-font text-2xl mb-6 text-stone-800">The Millionaire's Workbook</h4>
-                        <p class="text-stone-400 italic font-light mb-10">Join 15,000+ young students building their future estates today.</p>
-                        <button class="w-full py-5 border border-stone-800 text-stone-800 heading-font text-[10px] font-bold tracking-[0.3em] hover:bg-stone-800 hover:text-white transition-all">Start Your First Lesson</button>
+
+            <div class="space-y-4">
+                
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div>
+                        <span class="feature-tag">Intelligence Module</span>
+                        <span class="step-num block mb-4">01</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Smart Savings <br> Recommendations</h3>
+                        <div class="space-y-6 text-gray-400 text-lg font-light leading-relaxed">
+                            <p>Our "Utility Density" system dives deep into the DNA of your expenses. Instead of boring charts, you receive a detailed efficiency map for every dollar spent.</p>
+                            <ul class="text-sm space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-microchip text-blue-500 mt-1"></i>
+                                    <span><b>Neural Detection:</b> The algorithm isolates "emotional noise" — purchases triggered by marketing influence.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-chart-pie text-blue-500 mt-1"></i>
+                                    <span><b>Utility Coefficient:</b> Automatic calculation of return on each subscription or service in real-time.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="border-glow-wrapper">
+                        <div class="card-inner flex items-center justify-center min-h-[400px]">
+                            <div class="text-center p-8 bg-red-500/5 rounded-3xl border border-red-500/10">
+                                <div class="text-6xl mb-6 text-red-500 animate-pulse"><i class="fas fa-shopping-bag"></i></div>
+                                <div class="text-2xl font-black mb-2 text-white">Impulse Buy Detected</div>
+                                <div class="text-gray-500 font-mono mb-4">-$450.00 | Digital Electronics</div>
+                                <div class="text-[10px] text-red-400 font-bold uppercase tracking-widest">Utility Score: 12%</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- Decorative Gold Accent -->
-                <div class="absolute -top-10 -right-10 w-40 h-40 border border-heritage-gold opacity-20 hidden lg:block"></div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div class="lg:order-2 lg:pl-16">
+                        <span class="feature-tag">Global Bridge</span>
+                        <span class="step-num block mb-4">02</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Macroeconomic <br> Control Panel</h3>
+                        <div class="space-y-6 text-gray-400 text-lg font-light leading-relaxed">
+                            <p>Your capital doesn't exist in a vacuum. Control Panel connects your portfolio to the planet's pulse. We aggregate Bloomberg, Reuters, and central bank reports.</p>
+                            <div class="grid grid-cols-2 gap-4 mt-8">
+                                <div class="p-6 bg-white/5 rounded-2xl border border-white/5 hover:border-blue-500/30 transition">
+                                    <p class="text-[10px] text-gray-500 uppercase mb-2">CPI Impact</p>
+                                    <p class="text-red-400 font-black text-xl">-2.4% Power</p>
+                                    <p class="text-[10px] text-gray-600 mt-1">Purchasing drift</p>
+                                </div>
+                                <div class="p-6 bg-white/5 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition">
+                                    <p class="text-[10px] text-gray-500 uppercase mb-2">Yield Curve</p>
+                                    <p class="text-emerald-400 font-black text-xl">Inverted</p>
+                                    <p class="text-[10px] text-gray-600 mt-1">Recession risk: low</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:order-1 border-glow-wrapper">
+                        <div class="card-inner space-y-12 py-16">
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-500 mb-4 uppercase font-black">
+                                    Central Bank Benchmark Rate: <span class="text-blue-400">5.50%</span>
+                                </div>
+                                <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-blue-600 to-purple-600 w-[55%] rounded-full shadow-[0_0_15px_#3b82f6]"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 rounded-2xl bg-black/40 border border-white/5 font-mono text-[11px]">
+                                <p class="text-blue-500 mb-2">> Incoming_Feed: FED_MEETING_UPDATE</p>
+                                <p class="text-gray-400 leading-relaxed">Rate hold expected. Probability of a rate cut in Q3: 64.2%. Hedging long bond positions is recommended.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div>
+                        <span class="feature-tag">Wealth Guard</span>
+                        <span class="step-num block mb-4">03</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Automated <br> Tax Optimization</h3>
+                        <div class="space-y-6 text-gray-400 text-lg font-light leading-relaxed">
+                            <p>Taxes are the biggest expense for investors. Our AI auditor works 24/7, scanning legislation for new benefits, deductions, and optimization opportunities.</p>
+                            <div class="flex items-center gap-6 p-6 bg-emerald-500/5 rounded-3xl border border-emerald-500/10">
+                                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl">
+                                    <i class="fas fa-hand-holding-dollar"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-black text-xl">+$2,400 Optimized</p>
+                                    <p class="text-sm text-gray-500">Found unused IIS Type A deduction for the current period.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-glow-wrapper">
+                        <div class="card-inner flex flex-col justify-center min-h-[400px]">
+                            <div class="p-8 border-l-4 border-emerald-500 bg-white/5 rounded-r-3xl">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="text-gray-400 uppercase text-xs font-black tracking-widest">Estimated Annual Savings</span>
+                                    <span class="bg-emerald-500 text-black px-3 py-1 text-[10px] font-black rounded-lg">ACTIVE</span>
+                                </div>
+                                <div class="text-6xl font-black text-white mb-2">$14,200</div>
+                                <p class="text-gray-500 text-sm">The Tax-Loss Harvesting algorithm is ready for execution.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div class="lg:order-2 lg:pl-16">
+                        <span class="feature-tag">Predictive Engine</span>
+                        <span class="step-num block mb-4">04</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Wealth <br> Simulator</h3>
+                        <p class="text-gray-400 text-xl font-light leading-relaxed mb-10">
+                            Peer into the future with Monte Carlo simulation. We run your portfolio through <span class="text-white font-bold">10,000 probable scenarios</span>: from hyper-inflation to tech booms.
+                        </p>
+                        <ul class="space-y-4 text-sm text-gray-500">
+                            <li><i class="fas fa-check text-blue-500 mr-3"></i> Probability of achieving goal ($5M by 2035): <b>72%</b></li>
+                            <li><i class="fas fa-check text-blue-500 mr-3"></i> Drawdown under "Black Swan" scenario: <b>-18.4%</b></li>
+                        </ul>
+                    </div>
+                    <div class="lg:order-1 border-glow-wrapper">
+                        <div class="card-inner min-h-[450px]">
+                            <div class="h-full relative">
+                                <canvas id="simulatorChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div>
+                        <span class="feature-tag">Risk Management</span>
+                        <span class="step-num block mb-4">05</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Neural Asset <br> Allocation</h3>
+                        <p class="text-gray-400 text-xl font-light leading-relaxed mb-8">
+                            Dynamic rebalancing based on <span class="text-white font-medium">Risk Parity</span>. The system doesn't just buy stocks, it manages risk by redistributing asset weights depending on their current volatility.
+                        </p>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="mini-card text-center">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold mb-1">Stocks</div>
+                                <div class="text-white font-black">42%</div>
+                            </div>
+                            <div class="mini-card text-center">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold mb-1">Bonds</div>
+                                <div class="text-white font-black">28%</div>
+                            </div>
+                            <div class="mini-card text-center">
+                                <div class="text-[10px] text-gray-500 uppercase font-bold mb-1">Crypto</div>
+                                <div class="text-white font-black">30%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-glow-wrapper">
+                        <div class="card-inner flex items-center justify-center min-h-[400px]">
+                            <div class="relative w-64 h-64">
+                                <div class="absolute inset-0 border-[10px] border-blue-500/10 rounded-full"></div>
+                                <div class="absolute inset-0 border-[10px] border-blue-500 rounded-full border-t-transparent animate-[spin_3s_linear_infinite]"></div>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <div class="text-4xl font-black text-white">LOW</div>
+                                    <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-2">Neural Risk State</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer border-t border-white/5">
+                    <div class="lg:order-2 lg:pl-16">
+                        <span class="feature-tag">Fiscal Hub</span>
+                        <span class="step-num block mb-4">06</span>
+                        <h3 class="text-5xl font-black mb-8 leading-tight">Smart Fiscal <br> Calendar</h3>
+                        <p class="text-gray-400 text-xl font-light leading-relaxed mb-10">
+                            Your personal financial concierge. No missed deadlines. Integration with Google/Apple Calendar and automatic notifications for critical events.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 text-xs font-bold text-gray-500">
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span> Dividend Ex-Dates
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold text-gray-500">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Tax Filing
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold text-gray-500">
+                                <span class="w-3 h-3 rounded-full bg-purple-500"></span> Option Expiration
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:order-1 border-glow-wrapper">
+                        <div class="card-inner min-h-[400px] flex flex-col justify-center">
+                            <div class="grid grid-cols-7 gap-3 text-center text-[10px] text-gray-600 mb-6 uppercase font-black tracking-widest">
+                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                            </div>
+                            <div class="grid grid-cols-7 gap-3" id="calendarGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Manifesto -->
-    <section id="manifesto" class="py-32 bg-white">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="heading-font text-[10px] tracking-[0.6em] font-black text-heritage-gold mb-10 uppercase">The Manifesto</h2>
-            <p class="text-3xl md:text-5xl font-bold text-stone-900 leading-tight mb-16">
-                Legacy is not what is left <span class="italic font-normal">for</span> you, it is what is left <span class="italic font-normal">within</span> you.
-            </p>
-            <div class="w-1 h-24 bg-stone-100 mx-auto mb-16"></div>
-            <button class="btn-heritage px-16 py-6 text-xs uppercase font-bold tracking-[0.4em] rounded-sm">
-                Join the Dynasty
-            </button>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-stone-50 border-t border-stone-100 pt-24 pb-12">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-20 mb-24 items-start">
+    <footer class="bg-[#0b0e12] py-24 mt-40 border-t border-blue-500/20">
+        <div class="max-w-[1600px] mx-auto px-10">
+            <div class="grid md:grid-cols-4 gap-12 mb-20 text-left">
+                <div class="col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-microchip text-white text-sm"></i>
+                        </div>
+                        <span class="font-black tracking-tighter text-lg uppercase">Momma's<span class="text-blue-500">.M</span></span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">Financial OS v3.6. Managing private capital through the lens of data, neural networks, and absolute transparency.</p>
+                </div>
                 <div>
-                    <div class="flex items-center gap-4 mb-8">
-                        <div class="w-8 h-8 border border-emerald-900 flex items-center justify-center rotate-45">
-                            <span class="brand-font text-[8px] -rotate-45 font-bold text-emerald-900">M</span>
-                        </div>
-                        <span class="font-bold text-sm tracking-[0.2em] text-emerald-900 heading-font">Momma's Millionaire</span>
-                    </div>
-                    <p class="text-stone-400 text-sm italic font-light leading-relaxed">Dedicated to the preservation and growth of generational financial wisdom.</p>
+                    <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-6">System Status</h4>
+                    <ul class="text-gray-500 text-xs space-y-4 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Neural Core: Online</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> WebSocket: 8ms Latency</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 bg-purple-500 rounded-full"></span> Data Nodes: 14 Active</li>
+                    </ul>
                 </div>
-
-                <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-10">
-                    <div>
-                        <h5 class="heading-font text-[10px] font-black text-stone-800 tracking-widest mb-6">Foundation</h5>
-                        <ul class="space-y-4 text-xs sans-font text-stone-500 font-bold uppercase tracking-widest">
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">Philosophy</a></li>
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">Curriculum</a></li>
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">The Registry</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5 class="heading-font text-[10px] font-black text-stone-800 tracking-widest mb-6">Support</h5>
-                        <ul class="space-y-4 text-xs sans-font text-stone-500 font-bold uppercase tracking-widest">
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">The Hub</a></li>
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">Ethics</a></li>
-                            <li><a href="#" class="hover:text-heritage-gold transition-colors">Privacy</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-span-2 md:col-span-1">
-                        <h5 class="heading-font text-[10px] font-black text-stone-800 tracking-widest mb-6">Contact</h5>
-                        <p class="text-stone-400 text-xs italic mb-4">Inquiries for the registry:</p>
-                        <p class="text-emerald-900 text-sm font-bold tracking-tighter sans-font">concierge@mommasmillionaire.com</p>
+                <div>
+                    <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-6">Legal & Security</h4>
+                    <ul class="text-gray-500 text-xs space-y-4">
+                        <li><a href="#" class="hover:text-blue-400 transition">Quantum Privacy Protocol</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition">Institutional Compliance</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition">Data Sovereignty</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-6">Concierge</h4>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+                        <p class="text-[10px] text-gray-500 mb-4 uppercase font-black">Priority Line 24/7</p>
+                        <button class="w-full py-3 bg-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">
+                            Establish Link
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <div class="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-stone-200 gap-6">
-                <span class="sans-font text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em]">© 2026 Momma's Millionaire</span>
-                <div class="flex gap-8">
-                    <a href="#" class="text-stone-300 hover:text-emerald-900"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-stone-300 hover:text-emerald-900"><i class="fab fa-linkedin-in"></i></a>
+            <div class="pt-10 border-t border-white/5 text-center">
+                <div class="text-[10px] text-gray-700 font-black uppercase tracking-[0.6em] mb-2">
+                    © 2026 Momma's Millionaire Ecosystem. Decrypting the Future.
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const closeBtn = document.getElementById('close-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        // Инициализация главного графика с градиентами
+        const mainCtx = document.getElementById('financeChart').getContext('2d');
+        const gradientBlue = mainCtx.createLinearGradient(0, 0, 0, 400);
+        gradientBlue.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+        gradientBlue.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+        new Chart(mainCtx, {
+            type: 'line',
+            data: {
+                labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                datasets: [{
+                    label: 'Portfolio Value',
+                    data: [120, 150, 140, 240, 210, 310, 420, 390, 520, 480, 540, 620],
+                    borderColor: '#3b82f6',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#0b0d11',
+                    pointBorderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 10,
+                    tension: 0.45,
+                    fill: true,
+                    backgroundColor: gradientBlue
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0b0d11',
+                        titleFont: { size: 10, weight: 'bold' },
+                        bodyFont: { size: 14, weight: '900' },
+                        padding: 15,
+                        displayColors: false,
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1
+                    }
+                }, 
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#4b5563', font: { size: 9, weight: '900' } } }, 
+                    y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#4b5563', font: { size: 9 } } } 
+                } 
+            }
         });
 
-        closeBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            document.body.style.overflow = 'auto';
+        // График симулятора (Stacked Bar)
+        const simCtx = document.getElementById('simulatorChart').getContext('2d');
+        new Chart(simCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2026', '2028', '2030', '2032', '2034', '2036'],
+                datasets: [{
+                    label: 'Optimistic',
+                    data: [100, 220, 450, 780, 1100, 1600],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 12
+                }, {
+                    label: 'Base Case',
+                    data: [100, 160, 290, 450, 650, 950],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderRadius: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { stacked: false, beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)' } },
+                    x: { stacked: true, grid: { display: false } }
+                }
+            }
         });
 
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            });
-        });
+        // Генерация календаря
+        const grid = document.getElementById('calendarGrid');
+        for(let i=1; i<=28; i++) {
+            let style = "bg-white/5";
+            let icon = "";
+            if(i===12) {
+                style = "bg-blue-600/20 border-2 border-blue-500 text-white font-black";
+                icon = '<div class="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>';
+            }
+            if(i===19) {
+                style = "border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-black";
+                icon = '<div class="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full"></div>';
+            }
+            if(i===25) {
+                style = "border-2 border-purple-500/30 bg-purple-500/10 text-purple-400 font-black";
+            }
+            grid.innerHTML += `<div class="aspect-square ${style} rounded-xl flex items-center justify-center text-[11px] text-gray-500 relative transition hover:scale-110 cursor-pointer">${i}${icon}</div>`;
+        }
     </script>
+
 </body>
+
 </html>
