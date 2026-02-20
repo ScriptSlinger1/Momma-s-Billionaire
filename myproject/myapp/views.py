@@ -6,3 +6,6 @@ from django.views.generic import TemplateView
 
 class LandingPageView(TemplateView):
     template_name = 'myapp/landing.html'
+
+def expenses_tracking(request):
+    return render(request, 'myapp/expenses_tracking.html')
