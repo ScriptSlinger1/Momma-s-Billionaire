@@ -4,6 +4,22 @@
 Expenses Tracking
 {%endblock%}
 
-{%block body%}
-
+{%block content%}
+<h2>Daily breakdown</h2>
+{% for row in daily %}
+    <p>{{ row.day|date:"d M Y" }}: {{ row.total|floatformat:2 }}</p>
+{% endfor %}
+<h2>Weekly breakdown</h2>
+{% for row in weekly %}
+    <p>Week {{ row.week|date:"W Y" }}: {{ row.total|floatformat:2  }}</p>
+{% endfor %}
+<h2>Monthly breakdown</h2>
+{% for row in monthly %}
+    <p>{{ row.month|date:"F Y"}}: {{ row.total|floatformat:2  }}</p>
+{% endfor %}
+<h2>Yearly breakdown</h2>
+{% for row in yearly %}
+    <p>{{ row.year|date:"Y"}}: {{ row.total|floatformat:2  }}</p>
+{% endfor %}
+<h1>Total: {{total}}</h1>
 {%endblock%}
