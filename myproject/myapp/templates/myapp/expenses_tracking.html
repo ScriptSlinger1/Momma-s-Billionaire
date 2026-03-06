@@ -1,25 +1,300 @@
-{%extends 'myapp/base.html'%}
+{% extends 'myapp/base.html' %}
 
-{%block title%}
-Expenses Tracking
-{%endblock%}
+{% block title %}
+Expenses Tracking | Momma's Millionaire
+{% endblock %}
 
-{%block content%}
-<h2>Daily breakdown</h2>
-{% for row in daily %}
-    <p>{{ row.day|date:"d M Y" }}: {{ row.total|floatformat:2 }}</p>
-{% endfor %}
-<h2>Weekly breakdown</h2>
-{% for row in weekly %}
-    <p>Week {{ row.week|date:"W Y" }}: {{ row.total|floatformat:2  }}</p>
-{% endfor %}
-<h2>Monthly breakdown</h2>
-{% for row in monthly %}
-    <p>{{ row.month|date:"F Y"}}: {{ row.total|floatformat:2  }}</p>
-{% endfor %}
-<h2>Yearly breakdown</h2>
-{% for row in yearly %}
-    <p>{{ row.year|date:"Y"}}: {{ row.total|floatformat:2  }}</p>
-{% endfor %}
-<h1>Total: {{total}}</h1>
-{%endblock%}
+{% block content %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+    .expenses-dashboard {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #0b0d11;
+        color: #f0f6fc;
+        min-height: 100vh;
+        padding-top: 40px;
+        padding-bottom: 80px;
+    }
+
+    /* Glow Wrappers */
+    .border-glow-wrapper {
+        position: relative;
+        border-radius: 32px;
+        padding: 2px;
+        background: rgba(255, 255, 255, 0.05);
+        transition: background 0.5s ease;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+    }
+
+    .border-glow-wrapper.premium {
+        padding: 4px;
+    }
+
+    .border-glow-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -150%;
+        background: conic-gradient(
+            from 0deg,
+            #166534 0deg,
+            #22c55e 90deg,
+            #a3e635 180deg,
+            #10b981 270deg,
+            #166534 360deg
+        );
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        animation: rotateGlow 3s linear infinite;
+    }
+
+    .border-glow-wrapper:hover::before { opacity: 1; }
+    .border-glow-wrapper:hover { background: transparent; }
+
+    @keyframes rotateGlow {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Inner Card */
+    .card-inner {
+        position: relative;
+        background: #0b0d11;
+        border-radius: 30px;
+        z-index: 1;
+        padding: 2rem;
+        height: 100%;
+        color: #f0f6fc;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Buttons */
+    .btn-premium {
+        background: #0b0d11;
+        transition: all 0.4s ease;
+        position: relative;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        cursor: pointer;
+    }
+
+    .btn-premium:hover {
+        background: #166534;
+        border-color: #22c55e;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+    }
+
+    /* AI Advice Styling */
+    .ai-advice-list li {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        color: #9ca3af;
+        line-height: 1.6;
+    }
+
+    .ai-advice-list li::before {
+        content: '\f058';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        color: #22c55e;
+        margin-top: 0.2rem;
+    }
+
+    .chart-container {
+        position: relative;
+        flex-grow: 1;
+        min-height: 280px; /* Slightly taller for pie charts */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="expenses-dashboard">
+    <div class="max-w-[1500px] mx-auto px-6 lg:px-10">
+
+        <div class="border-glow-wrapper premium mb-10">
+            <div class="card-inner flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <p class="text-[10px] font-black text-green-500 uppercase tracking-[0.3em] mb-2">Live Expense Feed</p>
+                    <h1 class="text-5xl md:text-6xl font-black tracking-tight">${{ total|floatformat:2 }}</h1>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" name="analyze" class="btn-premium text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-3">
+                            <i class="fas fa-brain text-green-500"></i> Analyze My Spending
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if advice %}
+        <div class="border-glow-wrapper mb-10">
+            <div class="card-inner border border-white/5 bg-white/[0.01]">
+                <div class="flex gap-6 items-start">
+                    <div class="w-14 h-14 bg-green-500/20 border border-green-500/30 rounded-2xl flex items-center justify-center text-green-400 text-2xl shrink-0">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black uppercase tracking-tight mb-4 text-green-400">Neural Guidance</h3>
+                        <ul class="ai-advice-list font-light">
+                            {{ advice|safe }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <div class="border-glow-wrapper">
+                <div class="card-inner">
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Spending by Category</p>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-glow-wrapper">
+                <div class="card-inner">
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Daily Telemetry</p>
+                    <div class="chart-container">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-glow-wrapper">
+                <div class="card-inner">
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Weekly Aggregation</p>
+                    <div class="chart-container">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-glow-wrapper">
+                <div class="card-inner">
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Monthly Macro</p>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-glow-wrapper">
+                <div class="card-inner">
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Yearly Horizon</p>
+                    <div class="chart-container">
+                        <canvas id="yearlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    /* DATA EXTRACTION */
+
+    const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
+    const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
+
+    const weeklyLabels = [{% for row in weekly %}"Week {{ row.week|date:'W Y' }}",{% endfor %}];
+    const weeklyData = [{% for row in weekly %}{{ row.total|floatformat:2 }},{% endfor %}];
+
+    const monthlyLabels = [{% for row in monthly %}"{{ row.month|date:'F Y' }}",{% endfor %}];
+    const monthlyData = [{% for row in monthly %}{{ row.total|floatformat:2 }},{% endfor %}];
+
+    const yearlyLabels = [{% for row in yearly %}"{{ row.year|date:'Y' }}",{% endfor %}];
+    const yearlyData = [{% for row in yearly %}{{ row.total|floatformat:2 }},{% endfor %}];
+
+    const categoryLabels = [{% for row in category %}"{{ row.category__name }}",{% endfor %}];
+    const categoryData = [{% for row in category %}{{ row.total|floatformat:2 }},{% endfor %}];
+
+    /* GLOBAL CHART DEFAULTS FOR DARK THEME */
+    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+
+    /* FUNCTION: STYLED PIE CHART */
+    function createDarkPieChart(canvasId, labels, data) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        '#22c55e', /* Green */
+                        '#a3e635', /* Lime */
+                        '#10b981', /* Emerald */
+                        '#065f46', /* Dark Emerald */
+                        '#166534', /* Dark Green */
+                        '#34d399', /* Light Emerald */
+                        '#4ade80'  /* Light Green */
+                    ],
+                    borderColor: '#0b0d11', /* Matches card background for seamless cuts */
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#9ca3af',
+                            usePointStyle: true,
+                            padding: 15,
+                            font: { size: 10 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: '#a3e635',
+                        bodyColor: '#fff',
+                        padding: 10,
+                        callbacks: {
+                            label: function(context) {
+                                return ' $' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /* INITIALIZE CHARTS */
+    createDarkPieChart("categoryChart", categoryLabels, categoryData);
+    createDarkPieChart("dailyChart", dailyLabels, dailyData);
+    createDarkPieChart("weeklyChart", weeklyLabels, weeklyData);
+    createDarkPieChart("monthlyChart", monthlyLabels, monthlyData);
+    createDarkPieChart("yearlyChart", yearlyLabels, yearlyData);
+
+</script>
+
+{% endblock %}
