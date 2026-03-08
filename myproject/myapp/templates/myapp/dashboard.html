@@ -1,4 +1,217 @@
 <!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <title>MOMMA'S MILLIONAIRE | Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #050505;
+            --panel-bg: #0d0d0d;
+            --panel-bg-hover: #141c14;
+            --text-main: #ffffff;
+            --text-muted: #8c8c8c;
+            --accent-main: #00ff66;
+            --accent-light: #b3ffcc;
+            --accent-glow: rgba(0, 255, 102, 0.25);
+            --border-color: #1a1a1a;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar-trigger {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 100%;
+            z-index: 99;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .sidebar-trigger:hover + .sidebar,
+        .sidebar:hover {
+            transform: translateX(0);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin-bottom: 30px;
+            white-space: nowrap;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+        }
+        
+        .logo i {
+            color: var(--accent-main);
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .logo span.highlight {
+            color: var(--accent-main);
+            margin-left: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        /* Стили для ссылок внутри меню */
+        .nav-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .nav-item {
+            padding: 12px 24px;
+            margin: 4px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item i { margin-right: 14px; width: 16px; text-align: center; }
+        
+        .nav-link:hover .nav-item { 
+            background-color: var(--panel-bg-hover); 
+            color: var(--text-main); 
+        }
+
+        .nav-link.active .nav-item {
+            background: linear-gradient(90deg, rgba(0, 255, 102, 0.15) 0%, rgba(0, 255, 102, 0) 100%);
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-main);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            margin: 0 16px 20px;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, var(--accent-light), var(--accent-main));
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .user-info h4 { font-size: 14px; font-weight: 500; }
+
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        .header h1 { font-size: 24px; font-weight: 500; letter-spacing: 2px; }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar-trigger"></div>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-chart-pie"></i> 
+            MOMMA'S<span class="highlight">M.</span>
+        </div>
+        
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>{Account name}</h4>
+            </div>
+            <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 10px; color: var(--text-muted);"></i>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="/data" class="nav-link">
+                <div class="nav-item"><i class="fa-solid fa-chart-line"></i>Real world data</div>
+            </a>
+            <a href="/control" class="nav-link">
+                <div class="nav-item"><i class="fa-solid fa-sliders"></i>Control panel</div>
+            </a>
+            <a href="/savings" class="nav-link active">
+                <div class="nav-item"><i class="fa-solid fa-piggy-bank"></i>Smart savings</div>
+            </a>
+            <a href="/simulator" class="nav-link">
+                <div class="nav-item"><i class="fa-solid fa-flask"></i>Simulator</div>
+            </a>
+            <a href="/ai" class="nav-link">
+                <div class="nav-item"><i class="fa-solid fa-robot"></i>AI assistant</div>
+            </a>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <a href="/settings" class="nav-link">
+                <div class="nav-item"><i class="fa-solid fa-gear"></i> Setting</div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>DASHBOARD</h1>
+        </div>
+    </main>
+</body>
+</html><!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
