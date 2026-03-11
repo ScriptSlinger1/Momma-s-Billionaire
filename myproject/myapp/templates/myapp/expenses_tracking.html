@@ -1,3 +1,4 @@
+
 {% extends 'myapp/base.html' %}
 
 {% block title %}
@@ -94,6 +95,31 @@ Expenses Tracking | Momma's Millionaire
         box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
     }
 
+    /* Tab Buttons */
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+        background: rgba(34, 197, 94, 0.1);
+    }
+
+    .tab-btn.active {
+        background: #22c55e;
+        color: #0b0d11;
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    }
+
     /* AI Advice Styling */
     .ai-advice-list li {
         margin-bottom: 1rem;
@@ -116,7 +142,7 @@ Expenses Tracking | Momma's Millionaire
     .chart-container {
         position: relative;
         flex-grow: 1;
-        min-height: 280px; /* Slightly taller for pie charts */
+        min-height: 350px; /* Slightly larger for single view */
         width: 100%;
         display: flex;
         align-items: center;
@@ -134,7 +160,11 @@ Expenses Tracking | Momma's Millionaire
                     <h1 class="text-5xl md:text-6xl font-black tracking-tight">${{ total|floatformat:2 }}</h1>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="{%url 'myapp:expense_create'%}" class="btn-premium text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-3">
+                        <i class="fas fa-plus text-green-500"></i> New Expense
+                    </a>
+
                     <form method="post" class="m-0">
                         {% csrf_token %}
                         <button type="submit" name="analyze" class="btn-premium text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-3">
@@ -163,47 +193,55 @@ Expenses Tracking | Momma's Millionaire
         </div>
         {% endif %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button onclick="switchChart('category')" id="tab-category" class="tab-btn active">Category</button>
+            <button onclick="switchChart('daily')" id="tab-daily" class="tab-btn">Daily</button>
+            <button onclick="switchChart('weekly')" id="tab-weekly" class="tab-btn">Weekly</button>
+            <button onclick="switchChart('monthly')" id="tab-monthly" class="tab-btn">Monthly</button>
+            <button onclick="switchChart('yearly')" id="tab-yearly" class="tab-btn">Yearly</button>
+        </div>
 
-            <div class="border-glow-wrapper">
+        <div class="max-w-4xl mx-auto">
+
+            <div id="chart-category" class="border-glow-wrapper chart-section">
                 <div class="card-inner">
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Spending by Category</p>
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4 text-center">Spending by Category</p>
                     <div class="chart-container">
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="border-glow-wrapper">
+            <div id="chart-daily" class="border-glow-wrapper chart-section hidden">
                 <div class="card-inner">
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Daily Telemetry</p>
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4 text-center">Daily Telemetry</p>
                     <div class="chart-container">
                         <canvas id="dailyChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="border-glow-wrapper">
+            <div id="chart-weekly" class="border-glow-wrapper chart-section hidden">
                 <div class="card-inner">
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Weekly Aggregation</p>
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4 text-center">Weekly Aggregation</p>
                     <div class="chart-container">
                         <canvas id="weeklyChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="border-glow-wrapper">
+            <div id="chart-monthly" class="border-glow-wrapper chart-section hidden">
                 <div class="card-inner">
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Monthly Macro</p>
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4 text-center">Monthly Macro</p>
                     <div class="chart-container">
                         <canvas id="monthlyChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="border-glow-wrapper">
+            <div id="chart-yearly" class="border-glow-wrapper chart-section hidden">
                 <div class="card-inner">
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Yearly Horizon</p>
+                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4 text-center">Yearly Horizon</p>
                     <div class="chart-container">
                         <canvas id="yearlyChart"></canvas>
                     </div>
@@ -215,8 +253,26 @@ Expenses Tracking | Momma's Millionaire
 </div>
 
 <script>
-    /* DATA EXTRACTION */
+    /* TAB SWITCHING LOGIC */
+    function switchChart(chartId) {
+        // 1. Hide all chart sections
+        const sections = document.querySelectorAll('.chart-section');
+        sections.forEach(section => {
+            section.classList.add('hidden');
+        });
 
+        // 2. Remove 'active' class from all tabs
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // 3. Show the selected chart and activate the selected tab
+        document.getElementById(`chart-${chartId}`).classList.remove('hidden');
+        document.getElementById(`tab-${chartId}`).classList.add('active');
+    }
+
+    /* DATA EXTRACTION */
     const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
     const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
 
