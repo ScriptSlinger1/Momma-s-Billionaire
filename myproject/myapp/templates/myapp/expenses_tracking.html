@@ -252,105 +252,136 @@ Expenses Tracking | Momma's Millionaire
     </div>
 </div>
 
+
 <script>
-    /* TAB SWITCHING LOGIC */
-    function switchChart(chartId) {
-        // 1. Hide all chart sections
-        const sections = document.querySelectorAll('.chart-section');
-        sections.forEach(section => {
-            section.classList.add('hidden');
-        });
 
-        // 2. Remove 'active' class from all tabs
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(tab => {
-            tab.classList.remove('active');
-        });
+const charts = {};
 
-        // 3. Show the selected chart and activate the selected tab
-        document.getElementById(`chart-${chartId}`).classList.remove('hidden');
-        document.getElementById(`tab-${chartId}`).classList.add('active');
+function switchChart(chartId) {
+
+    const sections = document.querySelectorAll('.chart-section');
+    sections.forEach(section => {
+        section.classList.add('hidden');
+    });
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    document.getElementById(`chart-${chartId}`).classList.remove('hidden');
+    document.getElementById(`tab-${chartId}`).classList.add('active');
+
+    if (!charts[chartId]) {
+        loadChart(chartId);
     }
+}
 
-    /* DATA EXTRACTION */
-    const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
-    const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    const weeklyLabels = [{% for row in weekly %}"Week {{ row.week|date:'W Y' }}",{% endfor %}];
-    const weeklyData = [{% for row in weekly %}{{ row.total|floatformat:2 }},{% endfor %}];
+const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
+const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    const monthlyLabels = [{% for row in monthly %}"{{ row.month|date:'F Y' }}",{% endfor %}];
-    const monthlyData = [{% for row in monthly %}{{ row.total|floatformat:2 }},{% endfor %}];
+const weeklyLabels = [{% for row in weekly %}"Week {{ row.week|date:'W Y' }}",{% endfor %}];
+const weeklyData = [{% for row in weekly %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    const yearlyLabels = [{% for row in yearly %}"{{ row.year|date:'Y' }}",{% endfor %}];
-    const yearlyData = [{% for row in yearly %}{{ row.total|floatformat:2 }},{% endfor %}];
+const monthlyLabels = [{% for row in monthly %}"{{ row.month|date:'F Y' }}",{% endfor %}];
+const monthlyData = [{% for row in monthly %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    const categoryLabels = [{% for row in category %}"{{ row.category__name }}",{% endfor %}];
-    const categoryData = [{% for row in category %}{{ row.total|floatformat:2 }},{% endfor %}];
+const yearlyLabels = [{% for row in yearly %}"{{ row.year|date:'Y' }}",{% endfor %}];
+const yearlyData = [{% for row in yearly %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    /* GLOBAL CHART DEFAULTS FOR DARK THEME */
-    Chart.defaults.color = '#6b7280';
-    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+const categoryLabels = [{% for row in category %}"{{ row.category__name }}",{% endfor %}];
+const categoryData = [{% for row in category %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-    /* FUNCTION: STYLED PIE CHART */
-    function createDarkPieChart(canvasId, labels, data) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: [
-                        '#22c55e', /* Green */
-                        '#a3e635', /* Lime */
-                        '#10b981', /* Emerald */
-                        '#065f46', /* Dark Emerald */
-                        '#166534', /* Dark Green */
-                        '#34d399', /* Light Emerald */
-                        '#4ade80'  /* Light Green */
-                    ],
-                    borderColor: '#0b0d11', /* Matches card background for seamless cuts */
-                    borderWidth: 3,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#9ca3af',
-                            usePointStyle: true,
-                            padding: 15,
-                            font: { size: 10 }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        titleColor: '#a3e635',
-                        bodyColor: '#fff',
-                        padding: 10,
-                        callbacks: {
-                            label: function(context) {
-                                return ' $' + context.raw.toLocaleString();
-                            }
+
+Chart.defaults.color = '#6b7280';
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+
+
+function createDarkPieChart(canvasId, labels, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#22c55e',
+                    '#a3e635',
+                    '#10b981',
+                    '#065f46',
+                    '#166534',
+                    '#34d399',
+                    '#4ade80'
+                ],
+                borderColor: '#0b0d11',
+                borderWidth: 3,
+                hoverOffset: 6
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#9ca3af',
+                        usePointStyle: true,
+                        padding: 15,
+                        font: { size: 10 }
+                    }
+                },
+
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#a3e635',
+                    bodyColor: '#fff',
+                    padding: 10,
+                    callbacks: {
+                        label: function(context) {
+                            return ' $' + context.raw.toLocaleString();
                         }
                     }
                 }
             }
-        });
+        }
+    });
+}
+
+
+function loadChart(chartId) {
+
+    if (chartId === "category") {
+        charts[chartId] = createDarkPieChart("categoryChart", categoryLabels, categoryData);
     }
 
-    /* INITIALIZE CHARTS */
-    createDarkPieChart("categoryChart", categoryLabels, categoryData);
-    createDarkPieChart("dailyChart", dailyLabels, dailyData);
-    createDarkPieChart("weeklyChart", weeklyLabels, weeklyData);
-    createDarkPieChart("monthlyChart", monthlyLabels, monthlyData);
-    createDarkPieChart("yearlyChart", yearlyLabels, yearlyData);
+    if (chartId === "daily") {
+        charts[chartId] = createDarkPieChart("dailyChart", dailyLabels, dailyData);
+    }
+
+    if (chartId === "weekly") {
+        charts[chartId] = createDarkPieChart("weeklyChart", weeklyLabels, weeklyData);
+    }
+
+    if (chartId === "monthly") {
+        charts[chartId] = createDarkPieChart("monthlyChart", monthlyLabels, monthlyData);
+    }
+
+    if (chartId === "yearly") {
+        charts[chartId] = createDarkPieChart("yearlyChart", yearlyLabels, yearlyData);
+    }
+
+}
+
+
+loadChart("category");
 
 </script>
 
 {% endblock %}
+
