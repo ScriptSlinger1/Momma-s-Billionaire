@@ -16,7 +16,6 @@ Momma's M. | New Expense
     --input-bg: #1c2128;
     --border-color: #30363d;
 
-    /* ССЫЛКИ НА ВАШИ КАРТИНКИ */
     --left-img: url('https://i.pinimg.com/1200x/ed/b6/e8/edb6e841e185e8ec00fb3b0b76e178c4.jpg');
     --right-img: url('https://i.pinimg.com/736x/cc/5e/9c/cc5e9c262234cb7f184235fe152cacf2.jpg');
 }
@@ -48,8 +47,6 @@ body, html {
     z-index: 1;
 }
 
-/* --- ЭФФЕКТ ЦЕЛЬНЫХ ОБРЫВИСТЫХ КАРТИНOK (ЦЕНТРИРОВАНО) --- */
-
 .visualizer-container {
     position: absolute;
     top: 50%;
@@ -59,13 +56,11 @@ body, html {
     gap: 12px;
     z-index: -1;
     pointer-events: none;
-    height: 650px; /* Высота самой большой полосы */
+    height: 650px; 
 }
 
-/* Располагаем контейнеры ближе к центру */
 .visualizer-left {
-    right: calc(50% + 260px); /* Привязка к центру экрана + отступ от формы */
-}
+    right: calc(50% + 260px);
 
 .visualizer-right {
     left: calc(50% + 260px);
@@ -80,18 +75,16 @@ body, html {
     background-color: #111;
 }
 
-/* Геометрия полос */
 .bar-1 { width: 18px; height: 180px; opacity: 0.15; }
 .bar-2 { width: 30px; height: 320px; opacity: 0.35; }
 .bar-3 { width: 50px; height: 460px; opacity: 0.6; }
 .bar-4 { width: 85px; height: 600px; opacity: 0.95; }
 
-/* Внутренняя картинка (Единая для всех полос) */
 .bar::after {
     content: '';
     position: absolute;
     top: 50%;
-    width: 400px; /* Достаточная ширина, чтобы картинка не дублировалась */
+    width: 400px; 
     height: 650px;
     background-size: cover;
     background-position: center;
@@ -99,7 +92,6 @@ body, html {
     transform: translateY(-50%);
 }
 
-/* Синхронизация: картинка стоит неподвижно внутри "прорезей" */
 .visualizer-left .bar::after {
     background-image: var(--left-img);
     right: 0;
@@ -108,8 +100,6 @@ body, html {
     background-image: var(--right-img);
     left: 0;
 }
-
-/* --- БЛОК NEW EXPENSES (БЕЗ ИЗМЕНЕНИЙ) --- */
 
 .gradient-border-wrapper {
     position: relative;
@@ -225,7 +215,6 @@ body, html {
     appearance: none;
 }
 
-/* Убираем каунтер */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
@@ -260,8 +249,7 @@ input[type=number] {
     transition: all 0.3s ease;
     letter-spacing: 1px;
 }
-
-/* Блик на кнопке */
+    
 .btn-submit::before {
     content: '';
     position: absolute;
