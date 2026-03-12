@@ -1,13 +1,364 @@
-{%extends 'myapp/base.html'%}
+{% extends 'myapp/base.html' %}
 
-{%block title%}
-Create Expense
-{%endblock%}
+{% block title %}
+Momma's M. | New Expense
+{% endblock %}
 
-{%block content%}
-<form method="post" enctype="multipart/form-data">
-    {%csrf_token%}
-    {{form.as_p}}
-    <button type="submit">Submit</button>
-</form>
-{%endblock%}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary-green: #00d665;
+    --dark-bg: #050505;
+    --card-bg: #111111;
+    --input-bg: #1c2128;
+    --border-color: #30363d;
+
+    /* ССЫЛКИ НА ВАШИ КАРТИНКИ */
+    --left-img: url('https://i.pinimg.com/1200x/ed/b6/e8/edb6e841e185e8ec00fb3b0b76e178c4.jpg');
+    --right-img: url('https://i.pinimg.com/736x/cc/5e/9c/cc5e9c262234cb7f184235fe152cacf2.jpg');
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--dark-bg);
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.05) 25%,
+        var(--dark-bg) 100%
+    );
+    background-attachment: fixed;
+    z-index: 1;
+}
+
+/* --- ЭФФЕКТ ЦЕЛЬНЫХ ОБРЫВИСТЫХ КАРТИНOK (ЦЕНТРИРОВАНО) --- */
+
+.visualizer-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: -1;
+    pointer-events: none;
+    height: 650px; /* Высота самой большой полосы */
+}
+
+/* Располагаем контейнеры ближе к центру */
+.visualizer-left {
+    right: calc(50% + 260px); /* Привязка к центру экрана + отступ от формы */
+}
+
+.visualizer-right {
+    left: calc(50% + 260px);
+    flex-direction: row-reverse;
+}
+
+.bar {
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background-color: #111;
+}
+
+/* Геометрия полос */
+.bar-1 { width: 18px; height: 180px; opacity: 0.15; }
+.bar-2 { width: 30px; height: 320px; opacity: 0.35; }
+.bar-3 { width: 50px; height: 460px; opacity: 0.6; }
+.bar-4 { width: 85px; height: 600px; opacity: 0.95; }
+
+/* Внутренняя картинка (Единая для всех полос) */
+.bar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 400px; /* Достаточная ширина, чтобы картинка не дублировалась */
+    height: 650px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: translateY(-50%);
+}
+
+/* Синхронизация: картинка стоит неподвижно внутри "прорезей" */
+.visualizer-left .bar::after {
+    background-image: var(--left-img);
+    right: 0;
+}
+.visualizer-right .bar::after {
+    background-image: var(--right-img);
+    left: 0;
+}
+
+/* --- БЛОК NEW EXPENSES (БЕЗ ИЗМЕНЕНИЙ) --- */
+
+.gradient-border-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    padding: 2px;
+    background: #222;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+}
+
+.gradient-border-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        transparent 30%,
+        var(--primary-green) 50%,
+        transparent 70%,
+        transparent 100%
+    );
+    animation: rotate-gradient 4s linear infinite;
+}
+
+@keyframes rotate-gradient {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.expense-card {
+    position: relative;
+    width: 100%;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    z-index: 1;
+}
+
+.header-group {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 214, 101, 0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
+}
+
+.header-icon svg {
+    fill: var(--primary-green);
+}
+
+.header-group h2 {
+    font-size: 2.2em;
+    font-weight: 900;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.header-group h2 span {
+    color: var(--primary-green);
+}
+
+.header-group p {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.input-group {
+    margin-bottom: 22px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.7em;
+    color: #aaa;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Убираем каунтер */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 10px rgba(0, 214, 101, 0.1);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--primary-green);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 1.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+/* Блик на кнопке */
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: all 0.5s ease;
+}
+
+.btn-submit:hover {
+    background-color: #00bc58;
+    transform: translateY(-2px);
+}
+
+.btn-submit:hover::before {
+    left: 100%;
+}
+
+.footer-actions {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.footer-actions a {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.8em;
+    transition: color 0.3s ease;
+}
+
+.footer-actions a:hover {
+    color: var(--primary-green);
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+    -webkit-text-fill-color: #fff !important;
+}
+</style>
+
+<div class="main-wrapper">
+
+    <div class="visualizer-container visualizer-left">
+        <div class="bar bar-1"></div>
+        <div class="bar bar-2"></div>
+        <div class="bar bar-3"></div>
+        <div class="bar bar-4"></div>
+    </div>
+
+    <div class="gradient-border-wrapper">
+        <div class="expense-card">
+            <div class="header-group">
+                <div class="header-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M18 6H6C4.9 6 4 6.9 4 8V18C4 19.1 4.9 20 6 20H18C19.1 20 20 19.1 20 18V8C20 6.9 19.1 6 18 6ZM18 18H6V8H18V18ZM11 10H13V16H11V10ZM7 12H9V16H7V12ZM15 13H17V16H15V13Z"/>
+                    </svg>
+                </div>
+                <h2>New <span>Expense</span></h2>
+                <p>Fill in the details to track your spending</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div style="color: #ff4d4d; font-size: 0.75em; margin-top: 5px;">
+                                {{ field.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn-submit">ADD EXPENSE</button>
+            </form>
+
+            <div class="footer-actions">
+                <a href="javascript:history.back()">← Cancel and go back</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="visualizer-container visualizer-right">
+        <div class="bar bar-1"></div>
+        <div class="bar bar-2"></div>
+        <div class="bar bar-3"></div>
+        <div class="bar bar-4"></div>
+    </div>
+
+</div>
+
+{% endblock %}
