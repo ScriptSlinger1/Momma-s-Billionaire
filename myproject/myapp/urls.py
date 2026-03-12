@@ -1,10 +1,16 @@
 from django.contrib.auth.views import LoginView
 from django.urls import path
-from .views import (LandingPageView,
-                    expenses_tracking,
-                    RegistrationView,
-                    DashboardPrototype,
-                    CreateAnExpense)
+
+from .views import (
+    LandingPageView,
+    RegistrationView,
+    DashboardPrototype,
+    CreateAnExpense,
+    expenses_tracking,
+    logout_view
+)
+
+
 app_name = 'myapp'
 
 urlpatterns = [
@@ -13,5 +19,7 @@ urlpatterns = [
     path('expense_create/', CreateAnExpense.as_view(), name='expense_create'),
     path('dashboard/', DashboardPrototype.as_view(), name='dashboard'),
     path('reg/', RegistrationView.as_view(), name='reg'),
-    path('login/', LoginView.as_view(template_name='myapp/login.html', redirect_authenticated_user=True), name='login')
+    path('login/', LoginView.as_view(template_name='myapp/login.html', redirect_authenticated_user=True), name='login'),
+    path('logout/', logout_view, name='logout')
 ]
+

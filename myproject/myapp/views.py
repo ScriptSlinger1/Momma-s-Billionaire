@@ -1,18 +1,27 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncDay, TruncYear, TruncWeek
+
 from django.shortcuts import render
+
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView
+
 from .models import Expense
 from ollama import chat
 
+
 # Create your views here.
+
 
 class LandingPageView(TemplateView):
     template_name = 'myapp/landing.html'
+
 
 @login_required
 def expenses_tracking(request):
@@ -117,8 +126,8 @@ def expenses_tracking(request):
                 }
             ],
         )
-
         advice = response["message"]["content"]
+
     return render(request, "myapp/expenses_tracking.html", {
         "total": round(total, 2),
         "daily": daily,
@@ -132,13 +141,16 @@ def expenses_tracking(request):
         "advice": advice
     })
 
+
 class RegistrationView(CreateView):
     template_name = 'myapp/reg.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('myapp:login')
 
+
 class DashboardPrototype(TemplateView):
     template_name = 'myapp/dashboard.html'
+
 
 class CreateAnExpense(CreateView):
     model = Expense
@@ -149,3 +161,9 @@ class CreateAnExpense(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('myapp:login')
+

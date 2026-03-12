@@ -121,7 +121,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 LOGIN_URL = reverse_lazy('myapp:login')
-LOGIN_REDIRECT_URL = reverse_lazy('myapp:')
+LOGIN_REDIRECT_URL = reverse_lazy('myapp:dashboard')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

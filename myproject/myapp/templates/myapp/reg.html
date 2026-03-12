@@ -1,13 +1,247 @@
-{%extends 'myapp/base.html'%}
+{% extends 'myapp/base.html' %}
 
-{%block title%}
-Registration
-{%endblock%}
+{% block title %}
+Momma's M. | Registration
+{% endblock %}
 
-{%block content%}
-<form method="post" enctype="multipart/form-data">
-    {%csrf_token%}
-    {{form.as_p}}
-    <button type="submit">Submit</button>
-</form>
-{%endblock%}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
+<style>
+
+:root {
+    --primary-green: #00d665;
+    --dark-bg: #000000;
+    --panel-bg: #000000;
+    --input-bg: #1c2128;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--dark-bg);
+    color: #fff;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.brand-section {
+    flex: 0.9;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://i.pinimg.com/736x/a4/b7/6d/a4b76da784eb754d8cc53d3d305c5d57.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand-section h1 {
+    font-size: 3.5em;
+    margin: 0;
+    white-space: nowrap;
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: -1px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.brand-section h1 span {
+    color: var(--primary-green);
+}
+
+.quote {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #ccc;
+    max-width: 300px;
+    font-weight: 400;
+    line-height: 1.6;
+    font-style: normal;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+.form-section {
+    flex: 1.1;
+    background: linear-gradient(to bottom, rgba(150, 150, 150, 0.2) 0%, rgba(0, 0, 0, 0) 20%), var(--panel-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    position: relative;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 360px;
+    z-index: 2;
+}
+
+.form-section h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.form-section p.subtitle {
+    color: #777;
+    font-size: 0.9em;
+    margin-bottom: 35px;
+    font-weight: 400;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.75em;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 10px rgba(0, 214, 101, 0.1);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-green);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: all 0.5s;
+}
+
+.btn-submit:hover {
+    background-color: #00bc58;
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn-submit:hover::before {
+    left: 100%;
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+.footer-text {
+    margin-top: 40px;
+    font-size: 0.8em;
+    color: #555;
+    text-align: center;
+}
+
+.footer-text a {
+    color: var(--primary-green);
+    text-decoration: none;
+}
+
+@media (max-width: 800px) {
+    .container { flex-direction: column; }
+    .brand-section { flex: 0.4; border-right: none; border-bottom: 1px solid #222; }
+    .brand-section h1 { font-size: 2.5em; }
+}
+
+</style>
+
+<div class="container">
+
+    <div class="brand-section">
+        <h1>MOMMA'S <span>M.</span></h1>
+        <p class="quote">"Do not save what is left after spending, but spend what is left after saving."</p>
+    </div>
+
+    <div class="form-section">
+        <div class="form-container">
+
+            <h2>Create an account</h2>
+            <p class="subtitle">Join us to manage your assets efficiently.</p>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div style="color: #ff4d4d; font-size: 0.75em; margin-top: 5px;">
+                                {{ field.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-submit">
+                    SIGN UP
+                </button>
+
+            </form>
+
+            <div class="footer-text">
+                Already have an account? <a href="{% url 'myapp:login' %}">Sign In</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
