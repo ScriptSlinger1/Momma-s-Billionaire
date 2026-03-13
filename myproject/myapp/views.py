@@ -167,3 +167,5 @@ def logout_view(request):
     logout(request)
     return redirect('myapp:login')
 
+class RealWorldDataView(TemplateView):
+    template_name = 'myapp/real_world_data.html'

@@ -7,7 +7,8 @@ from .views import (
     DashboardPrototype,
     CreateAnExpense,
     expenses_tracking,
-    logout_view
+    logout_view,
+    RealWorldDataView
 )
 
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path('dashboard/', DashboardPrototype.as_view(), name='dashboard'),
     path('reg/', RegistrationView.as_view(), name='reg'),
     path('login/', LoginView.as_view(template_name='myapp/login.html', redirect_authenticated_user=True), name='login'),
-    path('logout/', logout_view, name='logout')
+    path('logout/', logout_view, name='logout'),
+    path('real_world_data/', RealWorldDataView.as_view(), name='real_world_data'),
 ]
 
