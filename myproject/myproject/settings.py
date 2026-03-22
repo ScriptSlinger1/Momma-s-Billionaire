@@ -121,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 LOGIN_URL = reverse_lazy('myapp:login')
-LOGIN_REDIRECT_URL = reverse_lazy('myapp:dashboard')
+LOGIN_REDIRECT_URL = reverse_lazy('myapp:ai')
 
 
 # Default primary key field type

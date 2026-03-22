@@ -1,25 +1,32 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, redirect_to_login
 from django.urls import path
 
 from .views import (
-    LandingPageView,
-    RegistrationView,
-    DashboardPrototype,
-    CreateAnExpense,
-    expenses_tracking,
-    logout_view
+    LandingPageView, RegistrationView, logout_view,
+    Dashboard, CreateAnExpense, expenses_tracking,
+    ai_assistant, chat_api, chat_new, chat_list, chat_history, chat_delete
 )
 
 
 app_name = 'myapp'
 
+
 urlpatterns = [
     path('', LandingPageView.as_view(), name='landing'),
-    path('expenses/', expenses_tracking, name='expenses'),
-    path('expense_create/', CreateAnExpense.as_view(), name='expense_create'),
-    path('dashboard/', DashboardPrototype.as_view(), name='dashboard'),
+    path('dashboard/', Dashboard.as_view(), name='dashboard'),
+
     path('reg/', RegistrationView.as_view(), name='reg'),
     path('login/', LoginView.as_view(template_name='myapp/login.html', redirect_authenticated_user=True), name='login'),
-    path('logout/', logout_view, name='logout')
+    path('logout/', logout_view, name='logout'),
+
+    path('expenses/', expenses_tracking, name='expenses'),
+    path('expense_create/', CreateAnExpense.as_view(), name='expense_create'),
+
+    path('ai/', ai_assistant, name='ai'),
+    path('ai/chat/', chat_api, name="chat_api"),
+    path('ai/chats/', chat_list, name='chat_list'),
+    path('ai/chats/new', chat_new, name='chat_new'),
+    path('ai/chats/<int:chat_id>/', chat_history, name='chat_history'),
+    path('ai/chats/<int:chat_id>/delete/', chat_delete, name='chat_delete'),
 ]
 
