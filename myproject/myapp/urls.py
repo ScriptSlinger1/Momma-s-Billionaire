@@ -4,7 +4,8 @@ from django.urls import path
 from .views import (
     LandingPageView, RegistrationView, logout_view,
     Dashboard, CreateAnExpense, expenses_tracking,
-    ai_assistant, chat_api, chat_new, chat_list, chat_history, chat_delete
+    AIAssistant, chat_api, chat_new, chat_list, chat_history, chat_delete,
+    RealWorldData, country_data
 )
 
 
@@ -22,11 +23,14 @@ urlpatterns = [
     path('expenses/', expenses_tracking, name='expenses'),
     path('expense_create/', CreateAnExpense.as_view(), name='expense_create'),
 
-    path('ai/', ai_assistant, name='ai'),
+    path('ai/', AIAssistant.as_view(), name='ai'),
     path('ai/chat/', chat_api, name="chat_api"),
     path('ai/chats/', chat_list, name='chat_list'),
     path('ai/chats/new', chat_new, name='chat_new'),
     path('ai/chats/<int:chat_id>/', chat_history, name='chat_history'),
     path('ai/chats/<int:chat_id>/delete/', chat_delete, name='chat_delete'),
+
+    path('data/', RealWorldData.as_view(), name='data'),
+    path('data/country/<str:country_code>/', country_data, name='country_data')
 ]
 

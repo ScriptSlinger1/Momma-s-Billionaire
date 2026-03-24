@@ -1,5 +1,6 @@
 from openai import OpenAI
 import json
+import requests
 
 from dotenv import load_dotenv
 import os
@@ -20,6 +21,7 @@ from django.contrib.auth import logout
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse_lazy
 
+from concurrent.futures import ThreadPoolExecutor
 from .models import Expense, Chat, Message
 
 
@@ -44,6 +46,10 @@ class Dashboard(TemplateView):
     template_name = 'myapp/dashboard.html'
 
 
+class RealWorldData(TemplateView):
+    template_name = 'myapp/real_world_data.html'
+
+
 class CreateAnExpense(CreateView):
     model = Expense
     fields = ['amount', 'category', 'details']
@@ -60,9 +66,8 @@ def logout_view(request):
     return redirect('myapp:login')
 
 
-@login_required()
-def ai_assistant(request):
-    return render(request, "myapp/ai_page.html")
+class AIAssistant(TemplateView):
+    template_name = 'myapp/ai_page.html'
 
 
 # EXPENSES TRACKING ----------<
@@ -382,3 +387,63 @@ def chat_delete(request, chat_id):
     chat.delete()
 
     return JsonResponse({'ok': True})
+
+
+def fetch_indicator(country_code, key, indicator):
+    url = f'https://api.worldbank.org/v2/country/{country_code}/indicator/{indicator}?format=json&mrv=10&per_page=10'
+
+    try:
+        resp = requests.get(url, timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+
+            if len(data) > 1 and data[1]:
+                entries = [e for e in data[1] if e.get('value') is not None]
+
+                if entries:
+                    latest = {
+                        'value': entries[0]['value'],
+                        'year': entries[0]['date'],
+                    }
+
+                    history = [{'year': e['date'], 'value': e['value']} for e in reversed(entries)]
+                    return key, latest, history
+
+    except Exception:
+        pass
+    return key, None, None
+
+
+@login_required
+def country_data(request, country_code):
+    indicators = {
+        'gdp': 'NY.GDP.MKTP.CD',
+        'gdp_growth': 'NY.GDP.MKTP.KD.ZG',
+        'gdp_per_capita': 'NY.GDP.PCAP.CD',
+
+        'exports': 'NE.EXP.GNFS.CD',
+        'imports': 'NE.IMP.GNFS.CD',
+
+        'inflation': 'FP.CPI.TOTL.ZG',
+        'expenses': 'GC.XPN.TOTL.GD.ZS',
+        'interest_rate': 'FR.INR.LEND',
+
+        'unemployment': 'SL.UEM.TOTL.ZS',
+        'population': 'SP.POP.TOTL',
+    }
+
+    result = {'country': country_code, 'latest': {}, 'history': {}}
+
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [
+            executor.submit(fetch_indicator, country_code, key, ind)
+            for key, ind in indicators.items()
+        ]
+
+        for future in futures:
+            key, latest, history = future.result()
+            if latest and history:
+                result['latest'][key] = latest
+                result['history'][key] = history
+
+    return JsonResponse(result)
