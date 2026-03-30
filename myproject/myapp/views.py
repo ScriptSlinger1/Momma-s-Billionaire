@@ -1,9 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from openai import OpenAI
-import json
-from .forms import CustomUserCreationForm
+
 from dotenv import load_dotenv
+from openai import OpenAI
+import requests
+import json
 import os
+
+
+from .forms import CustomUserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from django.http import JsonResponse, StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -404,8 +410,9 @@ def fetch_indicator(country_code, key, indicator):
                     history = [{'year': e['date'], 'value': e['value']} for e in reversed(entries)]
                     return key, latest, history
 
-    except Exception:
-        pass
+    except Exception as e:
+        print("Error fetching indicator:", e)
+
     return key, None, None
 
 
@@ -454,3 +461,5 @@ class ControlPanelView(TemplateView, LoginRequiredMixin):
 
 class MyProfileView(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/myprofile.html'
+
+

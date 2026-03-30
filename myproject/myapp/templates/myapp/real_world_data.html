@@ -1,273 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>MOMMA'S MILLIONAIRE | REAL WORLD DATA</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap"
-          rel="stylesheet">
+<title>MOMMA'S MILLIONAIRE | REAL WORLD DATA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-    <style>
+<style>
+:root {
+    --bg: #000000;
+    --sidebar-bg: #050505;
+    --sidebar-collapsed: 75px;
+    --sidebar-expanded: 260px;
+    --panel-bg: #0d0d0d;
+    --panel-bg-hover: #141c14;
+    --text: #ffffff;
+    --muted: #8c8c8c;
+    --green: #00ff66;
+    --green-dim: rgba(0,255,102,0.15);
+    --green-glow: rgba(0,255,102,0.35);
+    --accent-light: #b3ffcc;
+    --border: #1a1a1a;
+}
 
-        :root {
-            --bg: #000000;
-            --sidebar-bg: #050505;
-            --sidebar-collapsed: 75px;
-            --sidebar-expanded: 260px;
-            --panel-bg: #0d0d0d;
-            --panel-bg-hover: #141c14;
-            --text: #ffffff;
-            --muted: #8c8c8c;
-            --green: #00ff66;
-            --green-dim: rgba(0,255,102,0.15);
-            --green-glow: rgba(0,255,102,0.35);
-            --accent-light: #b3ffcc;
-            --border: #1a1a1a;
-        }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+.sidebar { width: var(--sidebar-collapsed); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; position: fixed; top:0; left:0; height:100%; z-index: 200; overflow: hidden; transition: width 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: 2px 0 12px rgba(0,0,0,0.4); }
+.sidebar:hover { width: var(--sidebar-expanded); }
+.logo { display: flex; align-items: center; padding: 0 25px; margin-bottom: 30px; font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: -1.5px; white-space: nowrap; overflow: hidden; }
+.logo i { color: var(--green); font-size: 20px; flex-shrink: 0; }
+.logo-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.logo-text .hl { color: var(--green); }
+.user-profile { display: flex; align-items: center; padding: 8px 12px; margin: 0 8px 20px; background: var(--panel-bg); border-radius: 12px; border: 1px solid var(--border); cursor: pointer; overflow: hidden; white-space: nowrap; }
 
-        .sidebar {
-            width: var(--sidebar-collapsed);
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; padding: 20px 0;
-            position: fixed; top:0; left:0; height:100%;
-            z-index: 200; overflow: hidden;
-            transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
-            box-shadow: 2px 0 12px rgba(0,0,0,0.4);
-        }
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
 
-        .sidebar:hover { width: var(--sidebar-expanded); }
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        .logo {
-            display: flex; align-items: center;
-            padding: 0 25px; margin-bottom: 30px;
-            font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: -1.5px;
-            white-space: nowrap; overflow: hidden;
-        }
+.user-info { margin-left: 12px; opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .user-info { opacity: 1; }
+.user-info h4 { font-size: 14px; font-weight: 500; }
+.user-chevron { margin-left: auto; font-size: 10px; color: var(--muted); opacity: 0; transition: opacity 0.2s 0.1s; flex-shrink: 0; padding-left: 8px; }
+.sidebar:hover .user-chevron { opacity: 1; }
+.nav-menu { list-style: none; flex: 1; }
+.nav-link { text-decoration: none; color: inherit; display: block; }
+.nav-item { padding: 12px 18px; margin: 4px 8px; border-radius: 10px; display: flex; align-items: center; color: var(--muted); font-size: 14px; cursor: pointer; transition: all 0.2s; white-space: nowrap; overflow: hidden; }
+.nav-item i { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-item-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .nav-item-text { opacity: 1; }
+.nav-link:hover .nav-item { background: var(--panel-bg-hover); color: var(--text); }
+.nav-link.active .nav-item { background: linear-gradient(90deg, rgba(0,255,102,0.15) 0%, rgba(0,255,102,0) 100%); color: var(--text); border-left: 3px solid var(--green); padding-left: 15px; }
+.main-content { flex: 1; margin-left: var(--sidebar-collapsed); display: flex; overflow: hidden; position: relative; }
+#globe-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#tooltip { position: absolute; background: rgba(0,10,0,0.85); border: 1px solid var(--green); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: var(--green); font-family: 'Share Tech Mono', monospace; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 50; white-space: nowrap; }
+#data-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 380px; background: rgba(0,5,0,0.92); border-left: 1px solid rgba(0,255,102,0.2); backdrop-filter: blur(12px); padding: 28px 24px; overflow-y: auto; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); z-index: 100; font-family: 'Share Tech Mono', monospace; }
+#data-panel.open { transform: translateX(0); }
+#data-panel::-webkit-scrollbar { width: 3px; }
+#data-panel::-webkit-scrollbar-thumb { background: rgba(0,255,102,0.3); border-radius: 3px; }
+.panel-close { position: absolute; top: 16px; right: 16px; background: transparent; border: 1px solid rgba(0,255,102,0.3); color: var(--green); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.panel-close:hover { background: rgba(0,255,102,0.1); }
+.panel-country { font-size: 18px; color: var(--green); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4px; }
+.panel-country-name { font-size: 25px; font-weight: 700; color: #fff; margin-bottom: 24px; line-height: 1.2; font-family: 'Montserrat', sans-serif; }
+.panel-section-title { font-size: 15px; color: var(--green); letter-spacing: 0.2em; text-transform: uppercase; margin: 20px 0 10px; border-bottom: 1px solid rgba(0,255,102,0.1); padding-bottom: 6px; }
+.stat-block { background: rgba(0,255,102,0.04); border: 1px solid rgba(0,255,102,0.12); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+.stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+.stat-value { font-size: 20px; color: var(--green); font-weight: 700; }
+.stat-year { font-size: 12px; color: #444; margin-top: 2px; }
+.stat-loading { font-size: 13px; color: var(--muted); text-align: center; padding: 40px 0; }
+.sparkline-wrap { margin-top: 8px; margin-bottom: 8px; }
+.sparkline-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+canvas.sparkline { width: 100%; height: 180px; display: block; margin-top: 4px; border-bottom: 1px solid rgba(0,255,102,0.1); }
+.hud-corner { position: absolute; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0,255,102,0.4); pointer-events: none; }
+.hud-tl { top: 20px; left: 20px; }
+.hud-bl { bottom: 20px; left: 20px; }
+.hud-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0,255,102,0.5); pointer-events: none; letter-spacing: 0.1em; }
+.scanlines { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,102,0.015) 2px, rgba(0,255,102,0.015) 4px); pointer-events: none; z-index: 10; }
 
-        .logo i { color: var(--green); font-size: 20px; flex-shrink: 0; }
-        .logo-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
-        .sidebar:hover .logo-text { opacity: 1; }
-        .logo-text .hl { color: var(--green); }
+/* --- НОВЫЕ СТИЛИ ДЛЯ ИНФО-ПАНЕЛИ --- */
+.info-btn {
+    color: var(--green);
+    cursor: pointer;
+    font-size: 10px;
+    border: 1px solid rgba(0, 255, 102, 0.4);
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+    background: transparent;
+}
 
-        .user-profile {
-            display: flex; align-items: center;
-            padding: 8px 12px; margin: 0 8px 20px;
-            background: var(--panel-bg); border-radius: 12px;
-            border: 1px solid var(--border); cursor: pointer;
-            overflow: hidden; white-space: nowrap;
-        }
+.info-btn:hover {
+    background: var(--green-dim);
+    box-shadow: 0 0 8px var(--green-glow);
+}
 
-        .avatar {
-            width: 40px;       /* control size */
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;  /* THIS is what actually makes it crop into a circle */
-        }
+#info-overlay {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-collapsed);
+    right: 0;
+    height: 60px;
+    background: rgba(0, 10, 0, 0.95);
+    border-bottom: 2px solid var(--green);
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    z-index: 300;
+    font-family: 'Share Tech Mono', monospace;
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* prevents stretching, keeps it clean */
-        }
+#info-overlay.visible {
+    transform: translateY(0);
+}
 
-        .user-info { margin-left: 12px; opacity: 0; transition: opacity 0.2s 0.1s; }
-        .sidebar:hover .user-info { opacity: 1; }
-        .user-info h4 { font-size: 14px; font-weight: 500; }
-        .user-chevron {
-            margin-left: auto; font-size: 10px; color: var(--muted);
-            opacity: 0; transition: opacity 0.2s 0.1s; flex-shrink: 0; padding-left: 8px;
-        }
+.info-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 
-        .sidebar:hover .user-chevron { opacity: 1; }
+.info-term {
+    color: var(--green);
+    font-weight: 700;
+    margin-right: 20px;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-right: 1px solid var(--green-dim);
+    padding-right: 20px;
+}
 
-        .nav-menu { list-style: none; flex: 1; }
-        .nav-link { text-decoration: none; color: inherit; display: block; }
-        .nav-item {
-            padding: 12px 18px; margin: 4px 8px; border-radius: 10px;
-            display: flex; align-items: center;
-            color: var(--muted); font-size: 14px; cursor: pointer;
-            transition: all 0.2s; white-space: nowrap; overflow: hidden;
-        }
+.info-text {
+    color: #fff;
+    font-size: 13px;
+    flex: 1;
+}
 
-        .nav-item i { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
-        .nav-item-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
-        .sidebar:hover .nav-item-text { opacity: 1; }
-        .nav-link:hover .nav-item { background: var(--panel-bg-hover); color: var(--text); }
-        .nav-link.active .nav-item {
-            background: linear-gradient(90deg, rgba(0,255,102,0.15) 0%, rgba(0,255,102,0) 100%);
-            color: var(--text); border-left: 3px solid var(--green); padding-left: 15px;
-        }
-
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-collapsed);
-            display: flex;
-            overflow: hidden;
-            position: relative;
-        }
-
-        #globe-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #tooltip {
-            position: absolute;
-            background: rgba(0,10,0,0.85);
-            border: 1px solid var(--green);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-            color: var(--green);
-            font-family: 'Share Tech Mono', monospace;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s;
-            z-index: 50;
-            white-space: nowrap;
-        }
-
-        #data-panel {
-            position: absolute;
-            right: 0; top: 0; bottom: 0;
-            width: 340px;
-            background: rgba(0,5,0,0.92);
-            border-left: 1px solid rgba(0,255,102,0.2);
-            backdrop-filter: blur(12px);
-            padding: 28px 24px;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
-            z-index: 100;
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        #data-panel.open { transform: translateX(0); }
-        #data-panel::-webkit-scrollbar { width: 3px; }
-        #data-panel::-webkit-scrollbar-thumb { background: rgba(0,255,102,0.3); border-radius: 3px; }
-
-        .panel-close {
-            position: absolute; top: 16px; right: 16px;
-            background: transparent; border: 1px solid rgba(0,255,102,0.3);
-            color: var(--green); width: 28px; height: 28px;
-            border-radius: 6px; cursor: pointer; font-size: 12px;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .panel-close:hover { background: rgba(0,255,102,0.1); }
-
-        .panel-country {
-            font-size: 11px; color: var(--green); letter-spacing: 0.2em;
-            text-transform: uppercase; margin-bottom: 4px;
-        }
-
-        .panel-country-name {
-            font-size: 22px; font-weight: 700; color: #fff;
-            margin-bottom: 24px; line-height: 1.2;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .stat-block {
-            background: rgba(0,255,102,0.04);
-            border: 1px solid rgba(0,255,102,0.12);
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 10px; color: var(--muted);
-            text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 20px; color: var(--green);
-            font-weight: 700;
-        }
-
-        .stat-year {
-            font-size: 10px; color: #444; margin-top: 2px;
-        }
-
-        .stat-loading {
-            font-size: 13px; color: var(--muted);
-            text-align: center; padding: 40px 0;
-        }
-
-        .panel-section-title {
-            font-size: 10px; color: var(--green); letter-spacing: 0.2em;
-            text-transform: uppercase; margin: 20px 0 10px;
-            border-bottom: 1px solid rgba(0,255,102,0.1);
-            padding-bottom: 6px;
-        }
-
-        .sparkline-wrap { margin-top: 6px; }
-        .sparkline-label {
-            font-size: 10px; color: var(--muted);
-            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
-        }
-        canvas.sparkline {
-            width: 100%; height: 50px; display: block;
-            border-bottom: 1px solid rgba(0,255,102,0.1);
-        }
-
-        .hud-corner {
-            position: absolute;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            color: rgba(0,255,102,0.4);
-            pointer-events: none;
-        }
-
-        .hud-tl { top: 20px; left: 20px; }
-        .hud-bl { bottom: 20px; left: 20px; }
-        .hud-hint {
-            position: absolute;
-            bottom: 20px; left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            color: rgba(0,255,102,0.5);
-            pointer-events: none;
-            letter-spacing: 0.1em;
-        }
-
-        .scanlines {
-            position: absolute; inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,255,102,0.015) 2px,
-                rgba(0,255,102,0.015) 4px
-            );
-            pointer-events: none;
-            z-index: 10;
-        }
-
-    </style>
+.info-close {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 18px;
+    margin-left: 20px;
+}
+</style>
 </head>
 
 <body>
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
 
     <div class="logo">
@@ -279,633 +175,374 @@
         <div class="avatar">
             <img src="{{ user.profile_picture.url }}">
         </div>
+
         <div class="user-info"><h4>{{ request.user.username }}</h4></div>
         <i class="fa-solid fa-chevron-down user-chevron"></i>
     </div>
 
     <nav class="nav-menu">
-        <a href="/data" class="nav-link active">
-            <div class="nav-item"><i class="fa-solid fa-chart-line"></i><span
-                    class="nav-item-text">Real world data</span></div>
-        </a>
-        <a href="/panel" class="nav-link">
-            <div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span>
-            </div>
-        </a>
-        <a href="/expenses" class="nav-link">
-            <div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span>
-            </div>
-        </a>
-        <a href="/sim" class="nav-link">
-            <div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div>
-        </a>
-        <a href="/ai" class="nav-link">
-            <div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div>
-        </a>
+        <a href="/data" class="nav-link active"><div class="nav-item"><i class="fa-solid fa-chart-line"></i><span class="nav-item-text">Real world data</span></div></a>
+        <a href="/panel" class="nav-link"><div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span></div></a>
+        <a href="/expenses" class="nav-link"><div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span></div></a>
+        <a href="/simulator" class="nav-link"><div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div></a>
+        <a href="/ai" class="nav-link"><div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div></a>
     </nav>
 
     <div style="margin-top:auto;">
-        <a href="/settings" class="nav-link">
-            <div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div>
-        </a>
+        <a href="/settings" class="nav-link"><div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div></a>
     </div>
 
 </aside>
 
-<!-- MAIN -->
+<div id="info-overlay">
+    <div class="info-content">
+        <div class="info-term" id="overlay-term">TERM</div>
+        <div class="info-text" id="overlay-text">Definition text goes here...</div>
+        <div class="info-close" onclick="hideInfo()">✕</div>
+    </div>
+</div>
+
 <main class="main-content">
     <canvas id="globe-canvas"></canvas>
     <div class="scanlines"></div>
-
-    <!-- HUD -->
     <div class="hud-corner hud-tl">MOMMA'S MILLIONAIRE // GLOBAL ECONOMIC TERMINAL</div>
     <div class="hud-corner hud-bl" id="hud-coords">LAT — LON —</div>
     <div class="hud-hint">CLICK A COUNTRY TO LOAD ECONOMIC DATA</div>
-
-    <!-- Tooltip -->
     <div id="tooltip"></div>
-
-    <!-- Data Panel -->
     <div id="data-panel">
         <button class="panel-close" id="panel-close">✕</button>
-
         <div id="panel-content">
             <div class="stat-loading">SELECT A COUNTRY</div>
         </div>
-
     </div>
 </main>
 
-<!-- THREE.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
+/* --- ПРЕДЫДУЩАЯ ЛОГИКА GLOBE (БЕЗ ИЗМЕНЕНИЙ) --- */
+const GREEN = 0x00ff66;
+const GREEN_DIM= 0x004422;
+const GREEN_HOVER = 0x55ffaa;
+const GREEN_SEL = 0x88ffcc;
+const RADIUS = 2;
 
-    // ── CONFIG ────────────────────────────────────────────────────────────────
-    const GREEN       = 0x00ff66;
-    const GREEN_DIM   = 0x004422;
-    const GREEN_HOVER = 0x00ff99;
-    const GREEN_SEL   = 0x00ffaa;
-    const RADIUS      = 2;
+const canvas = document.getElementById('globe-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 1);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 0, 5.5);
 
+function resize() {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(canvas);
+resize();
 
-    // ── SCENE ─────────────────────────────────────────────────────────────────
-    const canvas   = document.getElementById('globe-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 1);
+const atmGeo = new THREE.SphereGeometry(RADIUS * 1.06, 64, 64);
+const atmMat = new THREE.MeshBasicMaterial({ color: 0x00ff66, transparent: true, opacity: 0.04, side: THREE.BackSide });
+scene.add(new THREE.Mesh(atmGeo, atmMat));
 
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camera.position.set(0, 0, 5.5);
+const globeGeo = new THREE.SphereGeometry(RADIUS, 64, 64);
+const globeMat = new THREE.MeshBasicMaterial({ color: 0x001a0a, transparent: true, opacity: 0.95 });
+const globeMesh = new THREE.Mesh(globeGeo, globeMat);
+scene.add(globeMesh);
 
+const wfGeo = new THREE.SphereGeometry(RADIUS + 0.001, 36, 18);
+const wfMat = new THREE.MeshBasicMaterial({ color: 0x003322, wireframe: true, transparent: true, opacity: 0.25 });
+scene.add(new THREE.Mesh(wfGeo, wfMat));
 
-    // Resize
-    function resize() {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-    }
-    new ResizeObserver(resize).observe(canvas);
-    resize();
+const countriesGroup = new THREE.Group();
+scene.add(countriesGroup);
+let countriesData = [];
+let hoveredCountry = null;
+let selectedCountry = null;
 
+function latLonToVec3(lat, lon, r) {
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lon + 180) * (Math.PI / 180);
+    return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
+}
 
-    // ── ATMOSPHERE GLOW ───────────────────────────────────────────────────────
-    const atmGeo = new THREE.SphereGeometry(RADIUS * 1.06, 64, 64);
-    const atmMat = new THREE.MeshBasicMaterial({
-        color: 0x00ff66,
-        transparent: true,
-        opacity: 0.04,
-        side: THREE.BackSide,
-    });
-    scene.add(new THREE.Mesh(atmGeo, atmMat));
-
-
-    // ── GLOBE BASE ────────────────────────────────────────────────────────────
-    const globeGeo = new THREE.SphereGeometry(RADIUS, 64, 64);
-    const globeMat = new THREE.MeshBasicMaterial({
-        color: 0x001a0a,
-        transparent: true,
-        opacity: 0.95,
-    });
-    const globeMesh = new THREE.Mesh(globeGeo, globeMat);
-    scene.add(globeMesh);
-
-
-    const wfGeo = new THREE.SphereGeometry(RADIUS + 0.001, 36, 18);
-    const wfMat = new THREE.MeshBasicMaterial({
-        color: 0x003322,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.25,
-    });
-    scene.add(new THREE.Mesh(wfGeo, wfMat));
-
-
-    // ── COUNTRIES ──────────────────────────────────────────────────────────────
-    const countriesGroup = new THREE.Group();
-    scene.add(countriesGroup);
-
-    let countriesData   = [];
-    let hoveredCountry  = null;
-    let selectedCountry = null;
-
-
-    function latLonToVec3(lat, lon, r) {
-        const phi   = (90 - lat) * (Math.PI / 180);
-        const theta = (lon + 180) * (Math.PI / 180);
-        return new THREE.Vector3(
-            -r * Math.sin(phi) * Math.cos(theta),
-             r * Math.cos(phi),
-             r * Math.sin(phi) * Math.sin(theta)
-        );
-    }
-
-
-    function buildCountryMeshes(feature) {
-        const meshes   = [];
-        const outlines = [];
-
-        const geom = feature.geometry;
-        const polys = geom.type === 'Polygon'
-            ? [geom.coordinates]
-            : geom.coordinates;
-
-        polys.forEach(poly => {
-            poly.forEach(ring => {
-                // Outline
-                const pts = ring.map(([lon, lat]) => latLonToVec3(lat, lon, RADIUS + 0.003));
-                const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
-                const lineMat = new THREE.LineBasicMaterial({
-                    color: GREEN,
-                    transparent: true,
-                    opacity: 0.6,
-                });
-                outlines.push(new THREE.Line(lineGeo, lineMat));
-
-                // Fill (fan triangulation from centroid)
-                if (ring.length < 3) return;
-                const verts = ring.map(([lon, lat]) => latLonToVec3(lat, lon, RADIUS + 0.001));
-                const cx = verts.reduce((s,v) => s+v.x, 0) / verts.length;
-                const cy = verts.reduce((s,v) => s+v.y, 0) / verts.length;
-                const cz = verts.reduce((s,v) => s+v.z, 0) / verts.length;
-                const center = new THREE.Vector3(cx, cy, cz).normalize().multiplyScalar(RADIUS + 0.001);
-
-                const positions = [];
-                for (let i = 0; i < verts.length - 1; i++) {
-                    positions.push(...center.toArray(), ...verts[i].toArray(), ...verts[i+1].toArray());
-                }
-
-                const geo = new THREE.BufferGeometry();
-                geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                const mat = new THREE.MeshBasicMaterial({
-                    color: GREEN_DIM,
-                    transparent: true,
-                    opacity: 0.0,
-                    side: THREE.DoubleSide,
-                });
-                meshes.push(new THREE.Mesh(geo, mat));
-            });
+function buildCountryMeshes(feature) {
+    const meshes = []; const outlines = [];
+    const geom = feature.geometry;
+    const polys = geom.type === 'Polygon' ? [geom.coordinates] : geom.coordinates;
+    polys.forEach(poly => {
+        poly.forEach(ring => {
+            const pts = ring.map(([lon, lat]) => latLonToVec3(lat, lon, RADIUS + 0.003));
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+            const lineMat = new THREE.LineBasicMaterial({ color: GREEN, transparent: true, opacity: 0.6 });
+            outlines.push(new THREE.Line(lineGeo, lineMat));
+            if (ring.length < 3) return;
+            const verts = ring.map(([lon, lat]) => latLonToVec3(lat, lon, RADIUS + 0.001));
+            const cx = verts.reduce((s,v) => s+v.x, 0) / verts.length;
+            const cy = verts.reduce((s,v) => s+v.y, 0) / verts.length;
+            const cz = verts.reduce((s,v) => s+v.z, 0) / verts.length;
+            const center = new THREE.Vector3(cx, cy, cz).normalize().multiplyScalar(RADIUS + 0.001);
+            const positions = [];
+            for (let i = 0; i < verts.length - 1; i++) { positions.push(...center.toArray(), ...verts[i].toArray(), ...verts[i+1].toArray()); }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            const mat = new THREE.MeshBasicMaterial({ color: GREEN_DIM, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+            meshes.push(new THREE.Mesh(geo, mat));
         });
-
-        return { meshes, outlines };
-    }
-
-
-    async function loadCountries() {
-        const url = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
-        let data;
-        try {
-            const resp = await fetch(url);
-            data = await resp.json();
-        } catch(e) {
-            console.error('GeoJSON load failed', e);
-            return;
-        }
-
-        data.features.forEach(feature => {
-            const props = feature.properties;
-            const name  = props.ADMIN || props.name || 'Unknown';
-            const iso3 = (props.ISO_A3 || props['ISO3166-1-Alpha-3'] || props.iso_a3 || '').toUpperCase();
-            const iso2 = (props.ISO_A2 || props['ISO3166-1-Alpha-2'] || props.iso_a2 || '').toUpperCase();
-
-            const { meshes, outlines } = buildCountryMeshes(feature);
-
-            const group = new THREE.Group();
-            meshes.forEach(m => group.add(m));
-            outlines.forEach(o => group.add(o));
-            countriesGroup.add(group);
-
-            countriesData.push({ name, iso2, iso3, group, meshes, outlines });
-        });
-    }
-
-    loadCountries();
-
-
-    // ── ROTATION ──────────────────────────────────────────────────────────────
-    let isDragging   = false;
-    let prevMouse    = { x: 0, y: 0 };
-    let rotVel       = { x: 0, y: 0 };
-    const globeGroup = new THREE.Group();
-    scene.add(globeGroup);
-
-
-    globeGroup.add(globeMesh);
-    globeGroup.add(wfMat ? scene.children.find(c => c.material === wfMat) || new THREE.Object3D() : new THREE.Object3D());
-    globeGroup.add(countriesGroup);
-
-
-    scene.remove(globeMesh);
-    scene.remove(countriesGroup);
-    const globe2 = new THREE.Mesh(globeGeo, globeMat);
-    const wf2 = new THREE.Mesh(wfGeo, wfMat);
-    globeGroup.add(globe2);
-    globeGroup.add(wf2);
-    globeGroup.add(countriesGroup);
-
-
-    // ── RAYCASTER ─────────────────────────────────────────────────────────────
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    const tooltip = document.getElementById('tooltip');
-    const hudCoords = document.getElementById('hud-coords');
-
-    function getMouseNDC(e) {
-        const rect = canvas.getBoundingClientRect();
-        return new THREE.Vector2(
-            ((e.clientX - rect.left) / rect.width)  * 2 - 1,
-            -((e.clientY - rect.top)  / rect.height) * 2 + 1
-        );
-    }
-
-    function getHitCountry(e) {
-        const ndc = getMouseNDC(e);
-        raycaster.setFromCamera(ndc, camera);
-
-        const allMeshes = [];
-        countriesData.forEach(c => c.meshes.forEach(m => allMeshes.push({ mesh: m, country: c })));
-
-        let closest = null;
-        let minDist  = Infinity;
-
-        allMeshes.forEach(({ mesh, country }) => {
-            const hits = raycaster.intersectObject(mesh);
-            if (hits.length > 0 && hits[0].distance < minDist) {
-                minDist  = hits[0].distance;
-                closest  = country;
-            }
-        });
-
-        return closest;
-    }
-
-    function setHover(country) {
-        if (hoveredCountry === country) return;
-
-        if (hoveredCountry && hoveredCountry !== selectedCountry) {
-            hoveredCountry.meshes.forEach(m => {
-                m.material.opacity = 0.0;
-                m.material.color.setHex(GREEN_DIM);
-            });
-            hoveredCountry.outlines.forEach(o => {
-                o.material.opacity = 0.6;
-                o.material.color.setHex(GREEN);
-            });
-        }
-
-        hoveredCountry = country;
-
-        if (country && country !== selectedCountry) {
-            country.meshes.forEach(m => {
-                m.material.opacity = 0.18;
-                m.material.color.setHex(GREEN_HOVER);
-            });
-            country.outlines.forEach(o => {
-                o.material.opacity = 1.0;
-                o.material.color.setHex(GREEN_HOVER);
-            });
-        }
-    }
-
-    function selectCountry(country) {
-        if (selectedCountry) {
-            selectedCountry.meshes.forEach(m => {
-                m.material.opacity = 0.0;
-                m.material.color.setHex(GREEN_DIM);
-            });
-            selectedCountry.outlines.forEach(o => {
-                o.material.opacity = 0.6;
-                o.material.color.setHex(GREEN);
-            });
-        }
-
-        selectedCountry = country;
-
-        if (country) {
-            country.meshes.forEach(m => {
-                m.material.opacity = 0.25;
-                m.material.color.setHex(GREEN_SEL);
-            });
-            country.outlines.forEach(o => {
-                o.material.opacity = 1.0;
-                o.material.color.setHex(GREEN_SEL);
-            });
-            openPanel(country);
-        }
-    }
-
-
-    // DRAG TO ROTATE
-    canvas.addEventListener('mousedown', e => {
-        isDragging = true;
-        prevMouse = { x: e.clientX, y: e.clientY };
-        rotVel = { x: 0, y: 0 };
     });
+    return { meshes, outlines };
+}
 
-
-    // ZOOM
-    const MIN_ZOOM = 2.5;
-    const MAX_ZOOM = 12.0;
-
-    canvas.addEventListener('wheel', e => { e.preventDefault();
-    camera.position.z += e.deltaY * 0.003;
-
-    camera.position.z = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, camera.position.z)); },
-    { passive: false });
-
-
-    canvas.addEventListener('mousemove', e => {
-        if (isDragging) {
-            const dx = e.clientX - prevMouse.x;
-            const dy = e.clientY - prevMouse.y;
-            globeGroup.rotation.y += dx * 0.005;
-            globeGroup.rotation.x += dy * 0.005;
-            globeGroup.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeGroup.rotation.x));
-            rotVel = { x: dy * 0.005, y: dx * 0.005 };
-            prevMouse = { x: e.clientX, y: e.clientY };
-            tooltip.style.opacity = '0';
-        } else {
-            // Tooltip + hover
-            const country = getHitCountry(e);
-            setHover(country);
-
-            if (country) {
-                tooltip.textContent = country.name;
-                tooltip.style.left  = (e.clientX + 14) + 'px';
-                tooltip.style.top   = (e.clientY - 10) + 'px';
-                tooltip.style.opacity = '1';
-                canvas.style.cursor = 'pointer';
-            } else {
-                tooltip.style.opacity = '0';
-                canvas.style.cursor   = 'grab';
-            }
-
-            // HUD coords
-            const ndc = getMouseNDC(e);
-            raycaster.setFromCamera(ndc, camera);
-            const hits = raycaster.intersectObject(globe2);
-            if (hits.length > 0) {
-                const p    = hits[0].point.clone().normalize();
-                const lat  = (Math.asin(p.y) * 180 / Math.PI).toFixed(1);
-                const lon  = (Math.atan2(p.z, -p.x) * 180 / Math.PI).toFixed(1);
-                hudCoords.textContent = `LAT ${lat}° LON ${lon}°`;
-            }
-        }
+async function loadCountries() {
+    const url = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
+    let data;
+    try { const resp = await fetch(url); data = await resp.json(); } catch(e) { console.error('GeoJSON load failed', e); return; }
+    data.features.forEach(feature => {
+        const props = feature.properties;
+        const name = props.ADMIN || props.name || 'Unknown';
+        const iso3 = (props.ISO_A3 || props['ISO3166-1-Alpha-3'] || props.iso_a3 || '').toUpperCase();
+        const iso2 = (props.ISO_A2 || props['ISO3166-1-Alpha-2'] || props.iso_a2 || '').toUpperCase();
+        const { meshes, outlines } = buildCountryMeshes(feature);
+        const group = new THREE.Group();
+        meshes.forEach(m => group.add(m)); outlines.forEach(o => group.add(o));
+        countriesGroup.add(group);
+        countriesData.push({ name, iso2, iso3, group, meshes, outlines });
     });
+}
+loadCountries();
 
-    canvas.addEventListener('mouseup', e => {
-        if (!isDragging) return;
-        isDragging = false;
+let isDragging = false; let prevMouse = { x: 0, y: 0 }; let rotVel = { x: 0, y: 0 };
+const globeGroup = new THREE.Group();
+scene.add(globeGroup);
+globeGroup.add(globeMesh);
+globeGroup.add(scene.children.find(c => c.material === wfMat) || new THREE.Object3D());
+globeGroup.add(countriesGroup);
+scene.remove(globeMesh); scene.remove(countriesGroup);
+const globe2 = new THREE.Mesh(globeGeo, globeMat);
+const wf2 = new THREE.Mesh(wfGeo, wfMat);
+globeGroup.add(globe2); globeGroup.add(wf2); globeGroup.add(countriesGroup);
 
-        const dx = e.clientX - prevMouse.x;
-        const dy = e.clientY - prevMouse.y;
-        if (Math.abs(dx) < 3 && Math.abs(dy) < 3) {
-            const country = getHitCountry(e);
-            if (country) selectCountry(country);
-        }
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const tooltip = document.getElementById('tooltip');
+const hudCoords = document.getElementById('hud-coords');
+
+function getMouseNDC(e) {
+    const rect = canvas.getBoundingClientRect();
+    return new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+}
+
+function getHitCountry(e) {
+    const ndc = getMouseNDC(e);
+    raycaster.setFromCamera(ndc, camera);
+    const allMeshes = [];
+    countriesData.forEach(c => c.meshes.forEach(m => allMeshes.push({ mesh: m, country: c })));
+    let closest = null; let minDist = Infinity;
+    allMeshes.forEach(({ mesh, country }) => {
+        const hits = raycaster.intersectObject(mesh);
+        if (hits.length > 0 && hits[0].distance < minDist) { minDist = hits[0].distance; closest = country; }
     });
+    return closest;
+}
 
-    canvas.addEventListener('mouseleave', () => {
-        isDragging = false;
+function setHover(country) {
+    if (hoveredCountry === country) return;
+    if (hoveredCountry && hoveredCountry !== selectedCountry) { hoveredCountry.outlines.forEach(o => { o.material.opacity = 0.6; o.material.color.setHex(GREEN); }); }
+    hoveredCountry = country;
+    if (country && country !== selectedCountry) { country.outlines.forEach(o => { o.material.opacity = 1.0; o.material.color.setHex(GREEN_HOVER); }); }
+}
+
+function selectCountry(country) {
+    if (selectedCountry) { selectedCountry.outlines.forEach(o => { o.material.opacity = 0.6; o.material.color.setHex(GREEN); }); }
+    selectedCountry = country;
+    if (country) { country.outlines.forEach(o => { o.material.opacity = 1.0; o.material.color.setHex(GREEN_SEL); }); openPanel(country); }
+}
+
+canvas.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; rotVel = { x: 0, y: 0 }; });
+
+const MIN_ZOOM = 2.5; const MAX_ZOOM = 12.0;
+canvas.addEventListener('wheel', e => { e.preventDefault(); camera.position.z += e.deltaY * 0.003; camera.position.z = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, camera.position.z)); }, { passive: false });
+
+canvas.addEventListener('mousemove', e => {
+    if (isDragging) {
+        const dx = e.clientX - prevMouse.x; const dy = e.clientY - prevMouse.y;
+        globeGroup.rotation.y += dx * 0.005; globeGroup.rotation.x += dy * 0.005;
+        globeGroup.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeGroup.rotation.x));
+        rotVel = { x: dy * 0.005, y: dx * 0.005 }; prevMouse = { x: e.clientX, y: e.clientY };
         tooltip.style.opacity = '0';
-        setHover(null);
-    });
-
-
-    function applyInertia() {
-        if (!isDragging) {
-            rotVel.x *= 0.95;
-            rotVel.y *= 0.95;
-            globeGroup.rotation.x += rotVel.x * 0.3;
-            globeGroup.rotation.y += rotVel.y * 0.3;
+    } else {
+        const country = getHitCountry(e); setHover(country);
+        if (country) { tooltip.textContent = country.name; tooltip.style.left = (e.clientX + 14) + 'px'; tooltip.style.top = (e.clientY - 10) + 'px'; tooltip.style.opacity = '1'; canvas.style.cursor = 'pointer'; }
+        else { tooltip.style.opacity = '0'; canvas.style.cursor = 'grab'; }
+        const ndc = getMouseNDC(e); raycaster.setFromCamera(ndc, camera);
+        const hits = raycaster.intersectObject(globe2);
+        if (hits.length > 0) {
+            const p = hits[0].point.clone().normalize();
+            const lat = (Math.asin(p.y) * 180 / Math.PI).toFixed(1); const lon = (Math.atan2(p.z, -p.x) * 180 / Math.PI).toFixed(1);
+            hudCoords.textContent = `LAT ${lat}° LON ${lon}°`;
         }
     }
+});
 
+canvas.addEventListener('mouseup', e => { if (!isDragging) return; isDragging = false; const dx = e.clientX - prevMouse.x; const dy = e.clientY - prevMouse.y; if (Math.abs(dx) < 3 && Math.abs(dy) < 3) { const country = getHitCountry(e); if (country) selectCountry(country); } });
 
-    let autoRotate = true;
-    canvas.addEventListener('mousedown', () => { autoRotate = false; });
+/* --- НОВАЯ ЛОГИКА ДЛЯ ИНФО-БЛОКОВ --- */
 
+const termDefinitions = {
+    'GDP': 'Gross Domestic Product: The total market value of all final goods and services produced within a country in a specific period.',
+    'GDP GROWTH': 'The annual percentage growth rate of GDP at market prices based on constant local currency.',
+    'GDP PER CAPITA': 'A financial metric that breaks down a country\'s economic output per person.',
+    'EXPORTS': 'The value of all goods and other market services provided to the rest of the world.',
+    'IMPORTS': 'The value of all goods and other market services received from the rest of the world.',
+    'INFLATION': 'The rate at which the general level of prices for goods and services is rising, and, subsequently, purchasing power is falling.',
+    'GOV. EXPENSES': 'Total government spending, including consumption, investment, and transfer payments.',
+    'INTEREST RATE': 'The amount a lender charges for the use of assets, expressed as a percentage of the principal.',
+    'UNEMPLOYMENT': 'The share of the labor force that is without work but available for and seeking employment.',
+    'POPULATION': 'The total number of people living in a particular country or region.'
+};
 
-    // ── DATA PANEL ────────────────────────────────────────────────────────────
-    const panel = document.getElementById('data-panel');
-    const panelContent = document.getElementById('panel-content');
+function showInfo(term) {
+    const overlay = document.getElementById('info-overlay');
+    const termEl = document.getElementById('overlay-term');
+    const textEl = document.getElementById('overlay-text');
 
-    document.getElementById('panel-close').addEventListener('click', () => {
-        panel.classList.remove('open');
-        if (selectedCountry) {
-            selectedCountry.meshes.forEach(m => { m.material.opacity = 0.0; });
-            selectedCountry.outlines.forEach(o => { o.material.opacity = 0.6; o.material.color.setHex(GREEN); });
-            selectedCountry = null;
+    termEl.textContent = term;
+    textEl.textContent = termDefinitions[term] || 'Information not available.';
+    overlay.classList.add('visible');
+}
+
+function hideInfo() {
+    document.getElementById('info-overlay').classList.remove('visible');
+}
+
+const panel = document.getElementById('data-panel');
+const panelContent = document.getElementById('panel-content');
+
+document.getElementById('panel-close').addEventListener('click', () => {
+    panel.classList.remove('open');
+    hideInfo();
+    if (selectedCountry) { selectedCountry.outlines.forEach(o => { o.material.opacity = 0.6; o.material.color.setHex(GREEN); }); selectedCountry = null; }
+});
+
+function openPanel(country) {
+    panel.classList.add('open');
+    panelContent.innerHTML = `
+        <div class="panel-country">ECONOMIC PROFILE</div>
+        <div class="panel-country-name">${country.name}</div>
+        <div class="stat-loading"><i class="fa-solid fa-circle-notch fa-spin" style="color: var(--green); margin-bottom: 10px; font-size: 20px; display: block;"></i>FETCHING DATA...</div>
+    `;
+    fetchCountryData(country);
+}
+
+async function fetchCountryData(country) {
+    const code = country.iso3 || country.iso2;
+    if (!code) { panelContent.innerHTML = `<div class="panel-country">ECONOMIC PROFILE</div><div class="panel-country-name">${country.name}</div><div class="stat-loading" style="color :#ff4444;">NO DATA AVAILABLE</div>`; return; }
+
+    try {
+        const resp = await fetch(`/data/country/${code}/`);
+        if (!resp.ok) throw new Error(`HTTP error ${resp.status}`);
+        const data = await resp.json();
+
+        if (!data || !data.latest || Object.keys(data.latest).length === 0) {
+            panelContent.innerHTML = `<div class="panel-country">ECONOMIC PROFILE</div><div class="panel-country-name">${country.name}</div><div class="stat-loading" style="color: #ff4444;">NO DATA AVAILABLE</div>`; return;
         }
-    });
 
+        const indicators = [
+            { key: 'gdp', label: 'GDP', fmt: fmtGDP },
+            { key: 'gdp_growth', label: 'GDP Growth', fmt: fmtPct },
+            { key: 'gdp_per_capita',label:'GDP per Capita', fmt: fmtGDP },
+            { key: 'exports', label: 'Exports', fmt: fmtGDP },
+            { key: 'imports', label: 'Imports', fmt: fmtGDP },
+            { key: 'inflation', label: 'Inflation', fmt: fmtPct },
+            { key: 'expenses', label: 'Gov. Expenses', fmt: fmtPct },
+            { key: 'interest_rate', label: 'Interest Rate', fmt: fmtPct },
+            { key: 'unemployment', label: 'Unemployment', fmt: fmtPct },
+            { key: 'population', label: 'Population', fmt: fmtPop },
+        ];
 
-    function openPanel(country) {
-        panel.classList.add('open');
-        panelContent.innerHTML = `
-            <div class="panel-country">ECONOMIC PROFILE</div>
-            <div class="panel-country-name">${country.name}</div>
-            <div class="stat-loading">
-                <i class="fa-solid fa-circle-notch fa-spin" style="color:var(--green);margin-bottom:10px;font-size:20px;display:block;"></i>
-                FETCHING DATA...
-            </div>
-        `;
-        fetchCountryData(country);
-    }
+        let html = `<div class="panel-country">ECONOMIC PROFILE</div><div class="panel-country-name">${country.name}</div><div class="panel-section-title">KEY INDICATORS</div>`;
 
+        indicators.forEach(ind => {
+            const latest = data.latest[ind.key];
+            const val = latest ? ind.fmt(latest.value) : 'N/A';
+            const year = latest ? latest.year : '—';
 
-    async function fetchCountryData(country) {
-        const code = country.iso3 || country.iso2;
-        console.log('Country code for API:', code);
-
-        if (!code) {
-            panelContent.innerHTML = `
-                <div class="panel-country">ECONOMIC PROFILE</div>
-                <div class="panel-country-name">${country.name}</div>
-                <div class="stat-loading" style="color:#ff4444;">NO DATA AVAILABLE</div>
-            `;
-            return;
-        }
-
-        try {
-            const resp = await fetch(`/data/country/${code}/`);
-            if (!resp.ok) throw new Error(`HTTP error ${resp.status}`);
-            const data = await resp.json();
-
-            console.log('API response:', data);
-
-            if (!data || !data.latest || Object.keys(data.latest).length === 0) {
-                panelContent.innerHTML = `
-                    <div class="panel-country">ECONOMIC PROFILE</div>
-                    <div class="panel-country-name">${country.name}</div>
-                    <div class="stat-loading" style="color:#ff4444;">NO DATA AVAILABLE</div>
-                `;
-                return;
-            }
-
-            const indicators = [
-                { key: 'gdp', label: 'GDP', fmt: fmtGDP },
-                { key: 'gdp_growth', label: 'GDP Growth', fmt: fmtPct },
-                { key: 'inflation', label: 'Inflation', fmt: fmtPct },
-                { key: 'unemployment', label: 'Unemployment', fmt: fmtPct },
-                { key: 'population', label: 'Population', fmt: fmtPop },
-                { key: 'gdp_per_capita', label: 'GDP per Capita', fmt: fmtGDP },
-            ];
-
-            let html = `
-                <div class="panel-country">ECONOMIC PROFILE</div>
-                <div class="panel-country-name">${country.name}</div>
-                <div class="panel-section-title">KEY INDICATORS</div>
-            `;
-
-            indicators.forEach(ind => {
-                const latest = data.latest[ind.key];
-                const val    = latest ? ind.fmt(latest.value) : 'N/A';
-                const year   = latest ? latest.year : '—';
-
-                html += `
-                    <div class="stat-block">
-                        <div class="stat-label">${ind.label}</div>
-                        <div class="stat-value">${val}</div>
-                        <div class="stat-year">as of ${year}</div>
+            html += `
+                <div class="stat-block">
+                    <div class="stat-label">
+                        ${ind.label}
+                        <button class="info-btn" onclick="showInfo('${ind.label.toUpperCase()}')">i</button>
                     </div>
-                `;
-            });
-
-            html += `<div class="panel-section-title">TRENDS</div>`;
-            ['gdp_growth','inflation','unemployment'].forEach(key => {
-                const history = data.history[key];
-                if (history && history.length > 1) {
-                    html += `
-                        <div class="sparkline-wrap">
-                            <div class="sparkline-label">${indicators.find(x => x.key === key)?.label}</div>
-                            <canvas class="sparkline" data-key="${key}" width="280" height="50"></canvas>
-                        </div>
-                    `;
-                }
-            });
-
-            panelContent.innerHTML = html;
-
-            panelContent.querySelectorAll('canvas.sparkline').forEach(cvs => {
-                const key = cvs.dataset.key;
-                const history = data.history[key];
-                if (!history || !history.length) return;
-                drawSparkline(cvs, history.map(e => e.value), indicators.find(x => x.key === key)?.label || key);
-            });
-
-        } catch(err) {
-            console.error('Fetch country data failed:', err);
-            panelContent.innerHTML = `
-                <div class="panel-country">ECONOMIC PROFILE</div>
-                <div class="panel-country-name">${country.name}</div>
-                <div class="stat-loading" style="color:#ff4444;">NO DATA AVAILABLE</div>
+                    <div class="stat-value">${val}</div>
+                    <div class="stat-year">as of ${year}</div>
+                </div>
             `;
-        }
-    }
-
-
-    function drawSparkline(cvs, values, label) {
-        const ctx = cvs.getContext('2d');
-        const W = cvs.width, H = cvs.height;
-        const min = Math.min(...values);
-        const max = Math.max(...values);
-        const range = max - min || 1;
-
-        ctx.clearRect(0, 0, W, H);
-
-        // Zero line
-        if (min < 0 && max > 0) {
-            const zeroY = H - ((0 - min) / range) * H;
-            ctx.strokeStyle = 'rgba(0,255,102,0.15)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([2, 4]);
-            ctx.beginPath();
-            ctx.moveTo(0, zeroY);
-            ctx.lineTo(W, zeroY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-        }
-
-        // Fill
-        const grad = ctx.createLinearGradient(0, 0, 0, H);
-        grad.addColorStop(0,   'rgba(0,255,102,0.3)');
-        grad.addColorStop(1,   'rgba(0,255,102,0.0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        values.forEach((v, i) => {
-            const x = (i / (values.length - 1)) * W;
-            const y = H - ((v - min) / range) * H;
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         });
-        ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-        ctx.fill();
 
-        // Line
-        ctx.strokeStyle = '#00ff66';
-        ctx.lineWidth   = 1.5;
-        ctx.lineJoin    = 'round';
-        ctx.beginPath();
-        values.forEach((v, i) => {
-            const x = (i / (values.length - 1)) * W;
-            const y = H - ((v - min) / range) * H;
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        html += `<div class="panel-section-title">TRENDS</div>`;
+        ['gdp_growth','inflation','unemployment', 'interest_rate','expenses'].forEach(key => {
+            const history = data.history[key];
+            if (history && history.length > 1) {
+                html += `<div class="sparkline-wrap"><div class="sparkline-label">${indicators.find(x => x.key === key)?.label}</div><canvas class="sparkline" data-key="${key}"></canvas></div>`;
+            }
         });
-        ctx.stroke();
+
+        panelContent.innerHTML = html;
+
+        panelContent.querySelectorAll('canvas.sparkline').forEach(cvs => {
+            const key = cvs.dataset.key; const history = data.history[key];
+            if (!history || !history.length) return;
+            drawSparkline(cvs, history.map(e => e.value), indicators.find(x => x.key === key)?.label || key);
+        });
+
+    } catch(err) {
+        panelContent.innerHTML = `<div class="panel-country">ECONOMIC PROFILE</div><div class="panel-country-name">${country.name}</div><div class="stat-loading" style="color: #ff4444;">NO DATA AVAILABLE</div>`;
     }
+}
 
+function drawSparkline(cvs, values, label) {
+    const ctx = cvs.getContext('2d'); const ratio = window.devicePixelRatio || 1;
+    const displayWidth = cvs.clientWidth; const displayHeight = cvs.clientHeight;
+    cvs.width = displayWidth * ratio; cvs.height = displayHeight * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const W = displayWidth; const H = displayHeight;
+    const PAD = { top: 14, right: 18, bottom: 26, left: 42 };
+    const iW = W - PAD.left - PAD.right; const iH = H - PAD.top - PAD.bottom;
+    const mn = Math.min(...values); const mx = Math.max(...values); const rng = mx - mn || 1;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(0,255,102,0.07)'; ctx.lineWidth = 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(t => { const y = PAD.top + iH * t; ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + iW, y); ctx.stroke(); });
+    if (mn < 0 && mx > 0) { const zy = PAD.top + iH * (1 - (0 - mn) / rng); ctx.strokeStyle = 'rgba(0,255,102,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(PAD.left, zy); ctx.lineTo(PAD.left + iW, zy); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.strokeStyle = 'rgba(0,255,102,0.2)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, PAD.top + iH); ctx.lineTo(PAD.left + iW, PAD.top + iH); ctx.stroke();
+    ctx.fillStyle = 'rgba(0,255,102,0.45)'; ctx.font = '9px Share Tech Mono, monospace'; ctx.textAlign = 'right';
+    [0, 0.5, 1].forEach(t => { const val = mx - t * rng; const y = PAD.top + iH * t; const lbl = Math.abs(val) >= 1000 ? (val/1000).toFixed(0)+'k' : val.toFixed(1); ctx.fillText(lbl, PAD.left - 4, y + 3.5); });
+    ctx.textAlign = 'center'; const step = Math.max(1, Math.floor(values.length / 4));
+    values.forEach((v, i) => { if (i % step !== 0 && i !== values.length - 1) return; const x = PAD.left + (i / (values.length - 1)) * iW; ctx.fillText(String(new Date().getFullYear() - (values.length - 1 - i)), x, PAD.top + iH + 14); });
+    const pt = i => ({ x: PAD.left + (i / (values.length - 1)) * iW, y: PAD.top + iH * (1 - (values[i] - mn) / rng) });
+    const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + iH); grad.addColorStop(0, 'rgba(0,255,102,0.22)'); grad.addColorStop(1, 'rgba(0,255,102,0)');
+    ctx.fillStyle = grad; ctx.beginPath();
+    values.forEach((v, i) => { const {x, y} = pt(i); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+    ctx.lineTo(pt(values.length-1).x, PAD.top + iH); ctx.lineTo(PAD.left, PAD.top + iH); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.beginPath();
+    values.forEach((v, i) => { const {x, y} = pt(i); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+    ctx.stroke();
+    values.forEach((v, i) => { const {x, y} = pt(i); ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fillStyle = '#00ff66'; ctx.fill(); });
+}
 
-    // ── FORMATTERS ─────────────────────────────────────────────────────────────
-    function fmtGDP(v) {
-        if (v >= 1e12) return '$' + (v/1e12).toFixed(2) + 'T';
-        if (v >= 1e9)  return '$' + (v/1e9).toFixed(1)  + 'B';
-        if (v >= 1e6)  return '$' + (v/1e6).toFixed(1)  + 'M';
-        return '$' + v.toFixed(0);
-    }
+function fmtGDP(v) { if (v >= 1e12) return '$' + (v/1e12).toFixed(2) + 'T'; if (v >= 1e9) return '$' + (v/1e9).toFixed(1) + 'B'; if (v >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M'; return '$' + v.toFixed(0); }
+function fmtPct(v) { return (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }
+function fmtPop(v) { if (v >= 1e9) return (v/1e9).toFixed(2) + 'B'; if (v >= 1e6) return (v/1e6).toFixed(1) + 'M'; return (v/1e3).toFixed(0) + 'K'; }
 
-    function fmtPct(v)  { return (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }
-    function fmtPop(v)  {
-        if (v >= 1e9) return (v/1e9).toFixed(2) + 'B';
-        if (v >= 1e6) return (v/1e6).toFixed(1) + 'M';
-        return (v/1e3).toFixed(0) + 'K';
-    }
-
-
-    // ── RENDER LOOP ───────────────────────────────────────────────────────────
-    const clock = new THREE.Clock();
-
-    function animate() {
-        requestAnimationFrame(animate);
-        applyInertia();
-        if (autoRotate) globeGroup.rotation.y += 0.0008;
-        renderer.render(scene, camera);
-    }
-
-    animate();
-
+const clock = new THREE.Clock();
+let autoRotate = true; canvas.addEventListener('mousedown', () => { autoRotate = false; });
+function applyInertia() { if (!isDragging) { rotVel.x *= 0.95; rotVel.y *= 0.95; globeGroup.rotation.x += rotVel.x * 0.3; globeGroup.rotation.y += rotVel.y * 0.3; } }
+function animate() { requestAnimationFrame(animate); applyInertia(); if (autoRotate) globeGroup.rotation.y += 0.0008; renderer.render(scene, camera); }
+animate();
 </script>
 </body>
 </html>
+
