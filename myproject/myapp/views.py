@@ -1,6 +1,6 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from openai import OpenAI
 import json
-import requests
 from .forms import CustomUserCreationForm
 from dotenv import load_dotenv
 import os
@@ -41,15 +41,15 @@ class RegistrationView(CreateView):
     success_url = reverse_lazy('myapp:login')
 
 
-class Dashboard(TemplateView):
+class Dashboard(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/dashboard.html'
 
 
-class RealWorldData(TemplateView):
+class RealWorldData(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/real_world_data.html'
 
 
-class CreateAnExpense(CreateView):
+class CreateAnExpense(CreateView, LoginRequiredMixin):
     model = Expense
     fields = ['amount', 'category', 'details']
     template_name = 'myapp/create_expense.html'
@@ -135,7 +135,7 @@ def expenses_tracking(request):
     advice = None
 
     if request.method == "POST" and "analyze" in request.POST:
-        advice = get_ai_advice(
+        advice = get_ai_advice(request,
             total=total,
             category=list(category),
             category_daily=list(category_daily),
@@ -159,7 +159,7 @@ def expenses_tracking(request):
 
 # AI EXPENSES ADVICE ----------<
 
-
+@login_required
 def get_ai_advice(total, category, category_daily, category_weekly, category_monthly):
     prompt = f"""
         You are a financial advisor analyzing a user's spending data.
@@ -169,6 +169,9 @@ def get_ai_advice(total, category, category_daily, category_weekly, category_mon
 
         Category totals:
         {category}
+        
+        Daily category spending:
+        {category_daily}
 
         Monthly category spending:
         {category_monthly}
@@ -447,11 +450,11 @@ def country_data(request, country_code):
 
     return JsonResponse(result)
 
-class SimulatorView(TemplateView):
+class SimulatorView(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/simulator.html'
 
-class ControlPanelView(TemplateView):
+class ControlPanelView(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/control_panel.html'
 
-class MyProfileView(TemplateView):
+class MyProfileView(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/myprofile.html'

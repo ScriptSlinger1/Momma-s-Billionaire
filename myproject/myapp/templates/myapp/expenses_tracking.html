@@ -2,347 +2,352 @@
 <html lang="ru">
 
 <head>
-<title>MOMMA'S MILLIONAIRE | EXPENSES</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>MOMMA'S MILLIONAIRE | EXPENSES</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
+    <style>
 
-:root {
-    --bg-color: #0b0d11;
-    --sidebar-bg: #050505;
-    --sidebar-collapsed: 75px;
-    --sidebar-expanded: 260px;
-    --panel-bg: #0d0d0d;
-    --panel-bg-hover: #141c14;
-    --text-main: #ffffff;
-    --text-muted: #8c8c8c;
-    --accent-main: #00ff66;
-    --accent-light: #b3ffcc;
-    --border-color: #1a1a1a;
-}
+        :root {
+            --bg-color: #0b0d11;
+            --sidebar-bg: #050505;
+            --sidebar-collapsed: 75px;
+            --sidebar-expanded: 260px;
+            --panel-bg: #0d0d0d;
+            --panel-bg-hover: #141c14;
+            --text-main: #ffffff;
+            --text-muted: #8c8c8c;
+            --accent-main: #00ff66;
+            --accent-light: #b3ffcc;
+            --border-color: #1a1a1a;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: #f0f6fc;
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+        body {
+            background-color: var(--bg-color);
+            color: #f0f6fc;
+            display: flex;
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-.sidebar {
-    width: var(--sidebar-collapsed);
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    z-index: 100;
-    overflow: hidden;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 2px 0 12px rgba(0,0,0,0.4);
-}
+        .sidebar {
+            width: var(--sidebar-collapsed);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 100;
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+        }
 
-.sidebar:hover { width: var(--sidebar-expanded); }
+        .sidebar:hover { width: var(--sidebar-expanded); }
 
-.logo {
-    display: flex;
-    align-items: center;
-    padding: 0 25px;
-    margin-bottom: 30px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: -1.5px;
-    white-space: nowrap;
-    overflow: hidden;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            margin-bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
 
-.logo i {
-    color: var(--accent-main);
-    font-size: 20px;
-    flex-shrink: 0;
-}
+        .logo i {
+            color: var(--accent-main);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
 
-.logo-text {
-    margin-left: 14px;
-    opacity: 0;
-    transition: opacity 0.2s 0.1s;
-}
+        .logo-text {
+            margin-left: 14px;
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+        }
 
-.sidebar:hover .logo-text { opacity: 1; }
-.logo-text .highlight { color: var(--accent-main); }
+        .sidebar:hover .logo-text { opacity: 1; }
+        .logo-text .highlight { color: var(--accent-main); }
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    margin: 0 8px 20px;
-    background-color: var(--panel-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-}
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 0 8px 20px;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+        }
 
-.avatar {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(45deg, var(--accent-light), var(--accent-main));
-    border-radius: 50%;
-    flex-shrink: 0;
-}
+        .avatar {
+            width: 40px;       /* control size */
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;  /* THIS is what actually makes it crop into a circle */
+        }
 
-.user-info {
-    margin-left: 12px;
-    opacity: 0;
-    transition: opacity 0.2s 0.1s;
-}
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* prevents stretching, keeps it clean */
+        }
+        .user-info {
+            margin-left: 12px;
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+        }
 
-.sidebar:hover .user-info { opacity: 1; }
+        .sidebar:hover .user-info { opacity: 1; }
 
-.user-info h4 {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-main);
-}
+        .user-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
 
-.user-chevron {
-    margin-left: auto;
-    font-size: 10px;
-    color: var(--text-muted);
-    opacity: 0;
-    transition: opacity 0.2s 0.1s;
-    flex-shrink: 0;
-    padding-left: 8px;
-}
+        .user-chevron {
+            margin-left: auto;
+            font-size: 10px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+            flex-shrink: 0;
+            padding-left: 8px;
+        }
 
-.sidebar:hover .user-chevron { opacity: 1; }
+        .sidebar:hover .user-chevron { opacity: 1; }
 
-.nav-menu { list-style: none; flex: 1; }
+        .nav-menu { list-style: none; flex: 1; }
 
-.nav-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
+        .nav-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
 
-.nav-item {
-    padding: 12px 18px;
-    margin: 4px 8px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    color: var(--text-muted);
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    overflow: hidden;
-}
+        .nav-item {
+            padding: 12px 18px;
+            margin: 4px 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
 
-.nav-item i {
-    font-size: 15px;
-    flex-shrink: 0;
-    width: 20px;
-    text-align: center;
-}
+        .nav-item i {
+            font-size: 15px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
 
-.nav-item-text {
-    margin-left: 14px;
-    opacity: 0;
-    transition: opacity 0.2s 0.1s;
-}
+        .nav-item-text {
+            margin-left: 14px;
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+        }
 
-.sidebar:hover .nav-item-text { opacity: 1; }
+        .sidebar:hover .nav-item-text { opacity: 1; }
 
-.nav-link:hover .nav-item {
-    background-color: var(--panel-bg-hover);
-    color: var(--text-main);
-}
+        .nav-link:hover .nav-item {
+            background-color: var(--panel-bg-hover);
+            color: var(--text-main);
+        }
 
-.nav-link.active .nav-item {
-    background: linear-gradient(90deg, rgba(0,255,102,0.15) 0%, rgba(0,255,102,0) 100%);
-    color: var(--text-main);
-    border-left: 3px solid var(--accent-main);
-    padding-left: 15px;
-}
+        .nav-link.active .nav-item {
+            background: linear-gradient(90deg, rgba(0,255,102,0.15) 0%, rgba(0,255,102,0) 100%);
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-main);
+            padding-left: 15px;
+        }
 
-.main-content {
-    flex: 1;
-    margin-left: var(--sidebar-collapsed);
-    padding: 40px 40px 80px;
-    overflow-y: auto;
-}
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-collapsed);
+            padding: 40px 40px 80px;
+            overflow-y: auto;
+        }
 
-.card-premium {
-    position: relative;
-    border-radius: 24px;
-    padding: 2px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
+        .card-premium {
+            position: relative;
+            border-radius: 24px;
+            padding: 2px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
 
-.card-premium::before {
-    content: '';
-    position: absolute;
-    inset: -200%;
-    background: conic-gradient(
-        from 0deg,
-        #0b0d11 0deg,
-        #0b0d11 55deg,
-        #166534 75deg,
-        #22c55e 95deg,
-        #a3e635 108deg,
-        #22c55e 121deg,
-        #166534 140deg,
-        #0b0d11 160deg,
-        #0b0d11 360deg
-    );
-    animation: spinGlow 4s linear infinite;
-    z-index: 0;
-}
+        .card-premium::before {
+            content: '';
+            position: absolute;
+            inset: -200%;
+            background: conic-gradient(
+                from 0deg,
+                #0b0d11 0deg,
+                #0b0d11 55deg,
+                #166534 75deg,
+                #22c55e 95deg,
+                #a3e635 108deg,
+                #22c55e 121deg,
+                #166534 140deg,
+                #0b0d11 160deg,
+                #0b0d11 360deg
+            );
+            animation: spinGlow 4s linear infinite;
+            z-index: 0;
+        }
 
-@keyframes spinGlow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spinGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-.card-premium-inner {
-    position: relative;
-    z-index: 2;
-    background: #111318;
-    border-radius: 22px;
-    padding: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
+        .card-premium-inner {
+            position: relative;
+            z-index: 2;
+            background: #111318;
+            border-radius: 22px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
 
-.card-advice {
-    background: #0f1117;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
+        .card-advice {
+            background: #0f1117;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
 
-.card-advice:hover {
-    border-color: rgba(34, 197, 94, 0.45);
-    box-shadow: 0 0 28px rgba(34,197,94,0.07);
-}
+        .card-advice:hover {
+            border-color: rgba(34, 197, 94, 0.45);
+            box-shadow: 0 0 28px rgba(34,197,94,0.07);
+        }
 
-.card-chart {
-    background: #0f1117;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 20px;
-    padding: 2rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-}
-.card-chart:hover {
-    border-color: rgba(34,197,94,0.25);
-    box-shadow: 0 0 20px rgba(34,197,94,0.05);
-}
+        .card-chart {
+            background: #0f1117;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-chart:hover {
+            border-color: rgba(34,197,94,0.25);
+            box-shadow: 0 0 20px rgba(34,197,94,0.05);
+        }
 
-.btn-dark {
-    background: #0b0d11;
-    border: 1px solid rgba(34,197,94,0.3);
-    color: #fff;
-    padding: 0.9rem 1.8rem;
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+        .btn-dark {
+            background: #0b0d11;
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #fff;
+            padding: 0.9rem 1.8rem;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-.btn-dark:hover {
-    background: #166534;
-    border-color: #22c55e;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(34,197,94,0.2);
-}
+        .btn-dark:hover {
+            background: #166534;
+            border-color: #22c55e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34,197,94,0.2);
+        }
 
-.tab-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border: 1px solid rgba(34,197,94,0.3);
-    color: #22c55e;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #22c55e;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-.tab-btn:hover { background: rgba(34,197,94,0.1); }
+        .tab-btn:hover { background: rgba(34,197,94,0.1); }
 
-.tab-btn.active {
-    background: #22c55e;
-    color: #0b0d11;
-    box-shadow: 0 0 15px rgba(34,197,94,0.3);
-}
+        .tab-btn.active {
+            background: #22c55e;
+            color: #0b0d11;
+            box-shadow: 0 0 15px rgba(34,197,94,0.3);
+        }
 
-.ai-advice-list li {
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    font-size: 0.95rem;
-    color: #9ca3af;
-    line-height: 1.6;
-}
+        .ai-advice-list li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
 
-.ai-advice-list li::before {
-    content: '\f058';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    color: #22c55e;
-    margin-top: 0.2rem;
-    flex-shrink: 0;
-}
+        .ai-advice-list li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #22c55e;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
 
-.chart-container {
-    position: relative;
-    flex-grow: 1;
-    min-height: 350px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .chart-container {
+            position: relative;
+            flex-grow: 1;
+            min-height: 350px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-</style>
+    </style>
 </head>
 
 <body>
@@ -355,20 +360,37 @@ body {
     </div>
 
     <div class="user-profile">
-        <div class="avatar"></div>
+        <div class="avatar">
+            <img src="{{ user.profile_picture.url }}">
+        </div>
         <div class="user-info"><h4>{{ request.user.username }}</h4></div>
         <i class="fa-solid fa-chevron-down user-chevron"></i>
     </div>
 
     <nav class="nav-menu">
-        <a href="/data" class="nav-link"><div class="nav-item"><i class="fa-solid fa-chart-line"></i><span class="nav-item-text">Real world data</span></div></a>
-        <a href="/panel" class="nav-link"><div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span></div></a>
-        <a href="/expenses" class="nav-link active"><div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span></div></a>
-        <a href="/sim" class="nav-link"><div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div></a>
-        <a href="/ai" class="nav-link"><div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div></a>
+        <a href="/data" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-chart-line"></i><span
+                    class="nav-item-text">Real world data</span></div>
+        </a>
+        <a href="/panel" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span>
+            </div>
+        </a>
+        <a href="/expenses" class="nav-link active">
+            <div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span>
+            </div>
+        </a>
+        <a href="/sim" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div>
+        </a>
+        <a href="/ai" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div>
+        </a>
     </nav>
     <div style="margin-top:auto;">
-        <a href="/settings" class="nav-link"><div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div></a>
+        <a href="/settings" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div>
+        </a>
     </div>
 </aside>
 
@@ -379,8 +401,9 @@ body {
             <div class="card-premium-inner">
 
                 <div>
-                    <p style="font-size:10px;font-weight:900;color:#22c55e;text-transform:uppercase;letter-spacing:0.3em;margin-bottom:8px;">Live Expense Feed</p>
-                    <h1 style="font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;letter-spacing:-1px;">${{ total|floatformat:2 }}</h1>
+                    <p style="font-size:10px;font-weight:900;color:#22c55e;text-transform:uppercase;letter-spacing:0.3em;margin-bottom:8px;">
+                        Live Expense Feed</p>
+                    <h1 style="font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;letter-spacing:-1px;">${{total|floatformat:2 }}</h1>
                 </div>
 
                 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:1rem;">
@@ -410,7 +433,8 @@ body {
                 </div>
 
                 <div>
-                    <h3 style="font-size:1.3rem;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;margin-bottom:1rem;color:#4ade80;">Neural Guidance</h3>
+                    <h3 style="font-size:1.3rem;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;margin-bottom:1rem;color:#4ade80;">
+                        Neural Guidance</h3>
                     <ul class="ai-advice-list" style="font-weight:300;">{{ advice|safe }}</ul>
                 </div>
 
@@ -420,37 +444,52 @@ body {
 
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-bottom:1.5rem;">
             <button onclick="switchChart('category')" id="tab-category" class="tab-btn active">Category</button>
-            <button onclick="switchChart('daily')"    id="tab-daily"    class="tab-btn">Daily</button>
-            <button onclick="switchChart('weekly')"   id="tab-weekly"   class="tab-btn">Weekly</button>
-            <button onclick="switchChart('monthly')"  id="tab-monthly"  class="tab-btn">Monthly</button>
-            <button onclick="switchChart('yearly')"   id="tab-yearly"   class="tab-btn">Yearly</button>
+            <button onclick="switchChart('daily')" id="tab-daily" class="tab-btn">Daily</button>
+            <button onclick="switchChart('weekly')" id="tab-weekly" class="tab-btn">Weekly</button>
+            <button onclick="switchChart('monthly')" id="tab-monthly" class="tab-btn">Monthly</button>
+            <button onclick="switchChart('yearly')" id="tab-yearly" class="tab-btn">Yearly</button>
         </div>
 
         <div style="max-width:800px;margin:0 auto;">
 
             <div id="chart-category" class="card-chart chart-section">
-                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">Spending by Category</p>
-                <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">
+                    Spending by Category</p>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             </div>
 
             <div id="chart-daily" class="card-chart chart-section" style="display:none;">
-                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">Daily Telemetry</p>
-                <div class="chart-container"><canvas id="dailyChart"></canvas></div>
+                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">
+                    Daily Telemetry</p>
+                <div class="chart-container">
+                    <canvas id="dailyChart"></canvas>
+                </div>
             </div>
 
             <div id="chart-weekly" class="card-chart chart-section" style="display:none;">
-                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">Weekly Aggregation</p>
-                <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
+                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">
+                    Weekly Aggregation</p>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
             </div>
 
             <div id="chart-monthly" class="card-chart chart-section" style="display:none;">
-                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">Monthly Macro</p>
-                <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
+                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">
+                    Monthly Macro</p>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
             </div>
 
             <div id="chart-yearly" class="card-chart chart-section" style="display:none;">
-                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">Yearly Horizon</p>
-                <div class="chart-container"><canvas id="yearlyChart"></canvas></div>
+                <p style="font-size:10px;color:#6b7280;text-transform:uppercase;font-weight:900;letter-spacing:0.15em;margin-bottom:1rem;text-align:center;">
+                    Yearly Horizon</p>
+                <div class="chart-container">
+                    <canvas id="yearlyChart"></canvas>
+                </div>
             </div>
 
         </div>
@@ -459,67 +498,67 @@ body {
 
 <script>
 
-const charts = {};
+    const charts = {};
 
-function switchChart(chartId) {
-    document.querySelectorAll('.chart-section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    document.getElementById(`chart-${chartId}`).style.display = 'flex';
-    document.getElementById(`tab-${chartId}`).classList.add('active');
-    if (!charts[chartId]) loadChart(chartId);
-}
+    function switchChart(chartId) {
+        document.querySelectorAll('.chart-section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        document.getElementById(`chart-${chartId}`).style.display = 'flex';
+        document.getElementById(`tab-${chartId}`).classList.add('active');
+        if (!charts[chartId]) loadChart(chartId);
+    }
 
-const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
-const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
-const weeklyLabels = [{% for row in weekly %}"Week {{ row.week|date:'W Y' }}",{% endfor %}];
-const weeklyData = [{% for row in weekly %}{{ row.total|floatformat:2 }},{% endfor %}];
-const monthlyLabels = [{% for row in monthly %}"{{ row.month|date:'F Y' }}",{% endfor %}];
-const monthlyData = [{% for row in monthly %}{{ row.total|floatformat:2 }},{% endfor %}];
-const yearlyLabels = [{% for row in yearly %}"{{ row.year|date:'Y' }}",{% endfor %}];
-const yearlyData = [{% for row in yearly %}{{ row.total|floatformat:2 }},{% endfor %}];
-const categoryLabels = [{% for row in category %}"{{ row.category__name }}",{% endfor %}];
-const categoryData = [{% for row in category %}{{ row.total|floatformat:2 }},{% endfor %}];
+    const dailyLabels = [{% for row in daily %}"{{ row.day|date:'d M Y' }}",{% endfor %}];
+    const dailyData = [{% for row in daily %}{{ row.total|floatformat:2 }},{% endfor %}];
+    const weeklyLabels = [{% for row in weekly %}"Week {{ row.week|date:'W Y' }}",{% endfor %}];
+    const weeklyData = [{% for row in weekly %}{{ row.total|floatformat:2 }},{% endfor %}];
+    const monthlyLabels = [{% for row in monthly %}"{{ row.month|date:'F Y' }}",{% endfor %}];
+    const monthlyData = [{% for row in monthly %}{{ row.total|floatformat:2 }},{% endfor %}];
+    const yearlyLabels = [{% for row in yearly %}"{{ row.year|date:'Y' }}",{% endfor %}];
+    const yearlyData = [{% for row in yearly %}{{ row.total|floatformat:2 }},{% endfor %}];
+    const categoryLabels = [{% for row in category %}"{{ row.category__name }}",{% endfor %}];
+    const categoryData = [{% for row in category %}{{ row.total|floatformat:2 }},{% endfor %}];
 
-Chart.defaults.color = '#6b7280';
-Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 
-function createDarkPieChart(canvasId, labels, data) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    return new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels,
-            datasets: [{
-                data,
-                backgroundColor: ['#22c55e','#a3e635','#10b981','#065f46','#166534','#34d399','#4ade80'],
-                borderColor: '#0b0d11', borderWidth: 3, hoverOffset: 6,
-            }],
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, padding: 15, font: { size: 10 } } },
-                tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#a3e635', bodyColor: '#fff', padding: 10,
-                    callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString() },
+    function createDarkPieChart(canvasId, labels, data) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: ['#22c55e','#a3e635','#10b981','#065f46','#166534','#34d399','#4ade80'],
+                    borderColor: '#0b0d11', borderWidth: 3, hoverOffset: 6,
+                }],
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, padding: 15, font: { size: 10 } } },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#a3e635', bodyColor: '#fff', padding: 10,
+                        callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString() },
+                    },
                 },
             },
-        },
-    });
-}
+        });
+    }
 
-function loadChart(chartId) {
-    const map = {
-        category:['categoryChart', categoryLabels, categoryData],
-        daily: ['dailyChart',    dailyLabels,    dailyData],
-        weekly: ['weeklyChart',   weeklyLabels,   weeklyData],
-        monthly: ['monthlyChart',  monthlyLabels,  monthlyData],
-        yearly: ['yearlyChart',   yearlyLabels,   yearlyData],
-    };
-    if (map[chartId]) charts[chartId] = createDarkPieChart(...map[chartId]);
-}
+    function loadChart(chartId) {
+        const map = {
+            category:['categoryChart', categoryLabels, categoryData],
+            daily: ['dailyChart',    dailyLabels,    dailyData],
+            weekly: ['weeklyChart',   weeklyLabels,   weeklyData],
+            monthly: ['monthlyChart',  monthlyLabels,  monthlyData],
+            yearly: ['yearlyChart',   yearlyLabels,   yearlyData],
+        };
+        if (map[chartId]) charts[chartId] = createDarkPieChart(...map[chartId]);
+    }
 
-loadChart('category');
+    loadChart('category');
 
 </script>
 

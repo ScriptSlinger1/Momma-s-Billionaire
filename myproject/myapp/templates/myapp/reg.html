@@ -7,6 +7,7 @@ Momma's M. | Registration
 {% block content %}
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
+
 <style>
 
 :root {
@@ -16,21 +17,25 @@ Momma's M. | Registration
     --input-bg: #1c2128;
 }
 
+/* FIX 1: allow scrolling */
 body, html {
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     font-family: 'Montserrat', sans-serif;
     background-color: var(--dark-bg);
     color: #fff;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
+/* FIX 2: flexible container */
 .container {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    width: 100%;
 }
 
+/* LEFT SIDE */
 .brand-section {
     flex: 0.9;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
@@ -41,19 +46,18 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 60px;
+    padding: 40px;
     text-align: center;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .brand-section h1 {
-    font-size: 3.5em;
+    font-size: 3em;
     margin: 0;
     white-space: nowrap;
     font-style: italic;
     font-weight: 900;
     letter-spacing: -1px;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .brand-section h1 span {
@@ -64,125 +68,101 @@ body, html {
     margin-top: 20px;
     font-size: 0.9em;
     color: #ccc;
-    max-width: 300px;
-    font-weight: 400;
-    line-height: 1.6;
-    font-style: normal;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    max-width: 280px;
+    line-height: 1.5;
 }
 
+/* RIGHT SIDE */
 .form-section {
     flex: 1.1;
     background: linear-gradient(to bottom, rgba(150, 150, 150, 0.2) 0%, rgba(0, 0, 0, 0) 20%), var(--panel-bg);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 60px;
-    position: relative;
+    padding: 40px 25px;
+
+    /* FIX 3: internal scroll if needed */
+    overflow-y: auto;
 }
 
 .form-container {
     width: 100%;
     max-width: 360px;
-    z-index: 2;
 }
 
 .form-section h2 {
-    font-size: 2em;
-    margin-bottom: 10px;
+    font-size: 1.8em;
+    margin-bottom: 8px;
     font-weight: 700;
 }
 
-.form-section p.subtitle {
+.subtitle {
     color: #777;
-    font-size: 0.9em;
-    margin-bottom: 35px;
-    font-weight: 400;
+    font-size: 0.85em;
+    margin-bottom: 25px;
 }
 
+/* FIX 4: tighter spacing */
 .input-group {
-    margin-bottom: 25px;
+    margin-bottom: 18px;
 }
 
 .input-group label {
     display: block;
-    font-size: 0.75em;
+    font-size: 0.7em;
     color: #888;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     box-sizing: border-box;
     background-color: var(--input-bg);
     border: 1px solid transparent;
     border-radius: 8px;
     color: #fff;
     font-size: 14px;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 10px rgba(0, 214, 101, 0.1);
+    box-shadow: 0 0 8px rgba(0, 214, 101, 0.2);
 }
 
+/* BUTTON */
 .btn-submit {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     background-color: var(--primary-green);
     color: #000;
     border: none;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 1em;
+    font-size: 0.9em;
     cursor: pointer;
     text-transform: uppercase;
-    margin-top: 10px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-}
-
-.btn-submit::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-    );
-    transition: all 0.5s;
+    margin-top: 8px;
+    transition: 0.2s;
 }
 
 .btn-submit:hover {
     background-color: #00bc58;
     transform: scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-}
-
-.btn-submit:hover::before {
-    left: 100%;
 }
 
 .btn-submit:active {
     transform: scale(0.98);
 }
 
+/* FOOTER */
 .footer-text {
-    margin-top: 40px;
-    font-size: 0.8em;
+    margin-top: 25px;
+    font-size: 0.75em;
     color: #555;
     text-align: center;
 }
@@ -192,10 +172,22 @@ body, html {
     text-decoration: none;
 }
 
+/* MOBILE */
 @media (max-width: 800px) {
-    .container { flex-direction: column; }
-    .brand-section { flex: 0.4; border-right: none; border-bottom: 1px solid #222; }
-    .brand-section h1 { font-size: 2.5em; }
+    .container {
+        flex-direction: column;
+    }
+
+    .brand-section {
+        flex: none;
+        padding: 30px;
+        border-right: none;
+        border-bottom: 1px solid #222;
+    }
+
+    .brand-section h1 {
+        font-size: 2.2em;
+    }
 }
 
 </style>
@@ -204,7 +196,9 @@ body, html {
 
     <div class="brand-section">
         <h1>MOMMA'S <span>M.</span></h1>
-        <p class="quote">"Do not save what is left after spending, but spend what is left after saving."</p>
+        <p class="quote">
+            "Do not save what is left after spending, but spend what is left after saving."
+        </p>
     </div>
 
     <div class="form-section">
@@ -223,7 +217,7 @@ body, html {
                         {{ field }}
 
                         {% if field.errors %}
-                            <div style="color: #ff4d4d; font-size: 0.75em; margin-top: 5px;">
+                            <div style="color: #ff4d4d; font-size: 0.7em; margin-top: 4px;">
                                 {{ field.errors|striptags }}
                             </div>
                         {% endif %}
@@ -237,11 +231,13 @@ body, html {
             </form>
 
             <div class="footer-text">
-                Already have an account? <a href="{% url 'myapp:login' %}">Sign In</a>
+                Already have an account? 
+                <a href="{% url 'myapp:login' %}">Sign In</a>
             </div>
 
         </div>
     </div>
+
 </div>
 
 {% endblock %}
