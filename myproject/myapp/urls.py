@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, redirect_to_login
 from django.urls import path
 
@@ -5,7 +7,7 @@ from .views import (
     LandingPageView, RegistrationView, logout_view,
     Dashboard, CreateAnExpense, expenses_tracking,
     AIAssistant, chat_api, chat_new, chat_list, chat_history, chat_delete,
-    RealWorldData, country_data
+    RealWorldData, country_data, SimulatorView, ControlPanelView,MyProfileView
 )
 
 
@@ -31,6 +33,16 @@ urlpatterns = [
     path('ai/chats/<int:chat_id>/delete/', chat_delete, name='chat_delete'),
 
     path('data/', RealWorldData.as_view(), name='data'),
-    path('data/country/<str:country_code>/', country_data, name='country_data')
+    path('data/country/<str:country_code>/', country_data, name='country_data'),
+
+    path('sim/', SimulatorView.as_view(), name='sim'),
+
+    path('panel/', ControlPanelView.as_view(), name='panel'),
+
+    path('about-me/', MyProfileView.as_view(), name='about-me'),
 ]
 
+if settings.DEBUG:
+    urlpatterns.extend(
+        static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    )

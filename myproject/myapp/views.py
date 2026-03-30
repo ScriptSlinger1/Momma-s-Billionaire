@@ -1,7 +1,7 @@
 from openai import OpenAI
 import json
 import requests
-
+from .forms import CustomUserCreationForm
 from dotenv import load_dotenv
 import os
 
@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 
 from django.db.models.functions import TruncMonth, TruncDay, TruncYear, TruncWeek
 from django.db.models import Sum
@@ -38,7 +37,7 @@ class LandingPageView(TemplateView):
 
 class RegistrationView(CreateView):
     template_name = 'myapp/reg.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('myapp:login')
 
 
@@ -310,7 +309,7 @@ def chat_api(request):
                     model='gpt-5.4-nano',
                     messages=messages,
                     temperature=0.7,
-                    max_completion_tokens=800,
+                    max_completion_tokens=2000,
                     stream=True,
                 )
 
@@ -447,3 +446,12 @@ def country_data(request, country_code):
                 result['history'][key] = history
 
     return JsonResponse(result)
+
+class SimulatorView(TemplateView):
+    template_name = 'myapp/simulator.html'
+
+class ControlPanelView(TemplateView):
+    template_name = 'myapp/control_panel.html'
+
+class MyProfileView(TemplateView):
+    template_name = 'myapp/myprofile.html'
