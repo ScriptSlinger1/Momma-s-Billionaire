@@ -447,3 +447,4 @@ def country_data(request, country_code):
                 result['history'][key] = history
 
     return JsonResponse(result)
+
