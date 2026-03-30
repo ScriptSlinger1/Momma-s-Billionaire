@@ -60,7 +60,7 @@ git clone https://github.com/ScriptSlinger1/Momma-s-Billionaire.git
 cd momma-s-millionaire
 
 python -m venv venv
-source venv/bin/activate  # venv\Scripts\activate for Windows
+venv\Scripts\activate
 
 pip install -r requirements.txt
 
