@@ -165,7 +165,7 @@ def expenses_tracking(request):
 # AI EXPENSES ADVICE ----------<
 
 @login_required
-def get_ai_advice(total, category, category_daily, category_weekly, category_monthly):
+def get_ai_advice(request, total, category, category_daily, category_weekly, category_monthly):
     prompt = f"""
         You are a financial advisor analyzing a user's spending data.
 

@@ -462,7 +462,7 @@
 
     <div class="user-profile">
         <div class="avatar">
-            <img src="{{ user.profile_picture.url }}">
+            <a href="{% url 'myapp:about-me'%}"><img src="{{ user.profile_picture.url }}"></a>
         </div>
         <div class="user-info"><h4>{{ request.user.username }}</h4></div>
         <i class="fa-solid fa-chevron-down user-chevron"></i>
