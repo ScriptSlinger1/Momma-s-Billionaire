@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MOMMA'S MILLIONAIRE | INTERACTIVE CONTROL PANEL</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #050505;
+            --sidebar-collapsed: 75px;
+            --sidebar-expanded: 260px;
+            --panel-bg: #0d0d0d;
+            --panel-bg-hover: #141c14;
+            --text-main: #ffffff;
+            --text-muted: #8c8c8c;
+            --accent-main: #00ff66;
+            --accent-light: #b3ffcc;
+            --border-color: #1a1a1a;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --info: #00aaff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR STYLES */
+        .sidebar {
+            width: var(--sidebar-collapsed);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0 0 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 100;
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar:hover { width: var(--sidebar-expanded); }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            margin-bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            white-space: nowrap;
+        }
+
+        .logo i { color: var(--accent-main); font-size: 20px; flex-shrink: 0; }
+        .logo-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+        .sidebar:hover .logo-text { opacity: 1; }
+        .logo-text .highlight { color: var(--accent-main); }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-link { text-decoration: none; color: inherit; display: block; }
+        .nav-item {
+            padding: 12px 18px;
+            margin: 4px 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .nav-item i { font-size: 15px; width: 20px; text-align: center; }
+        .nav-item-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+        .sidebar:hover .nav-item-text { opacity: 1; }
+        .nav-link:hover .nav-item { background-color: var(--panel-bg-hover); color: var(--text-main); }
+        .nav-link.active .nav-item {
+            background: linear-gradient(90deg, rgba(0, 255, 102, 0.15) 0%, rgba(0, 255, 102, 0) 100%);
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-main);
+        }
+
+        /* USER PROFILE SECTION */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 0 10px 20px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .sidebar:hover .user-profile {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar {
+            width: 40px;       /* control size */
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;  /* THIS is what actually makes it crop into a circle */
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* prevents stretching, keeps it clean */
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-main);
+            border: 2px solid var(--sidebar-bg);
+            border-radius: 50%;
+        }
+
+        .user-info {
+            margin-left: 15px;
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+            flex: 1;
+        }
+
+        .sidebar:hover .user-info {
+            opacity: 1;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-tier {
+            font-size: 10px;
+            color: var(--accent-main);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .settings-icon {
+            color: var(--text-muted);
+            opacity: 0;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .sidebar:hover .settings-icon {
+            opacity: 1;
+        }
+
+        .settings-icon:hover {
+            color: var(--text-main);
+            transform: rotate(45deg);
+        }
+
+        /* MAIN CONTENT STYLES */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            margin-left: var(--sidebar-collapsed);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .header-badge { font-size: 10px; background: rgba(0, 170, 255, 0.1); color: var(--info); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--info); letter-spacing: 0.5px; }
+
+        /* GRID SYSTEM */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .panel-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .col-4 { grid-column: span 4; }
+        .col-6 { grid-column: span 6; }
+        .col-8 { grid-column: span 8; }
+        .col-12 { grid-column: span 12; }
+
+        @media (max-width: 1400px) {
+            .col-4 { grid-column: span 6; }
+            .col-8 { grid-column: span 12; }
+            #macro-cards-container { flex-direction: column; }
+        }
+
+        @media (max-width: 900px) {
+            .col-4, .col-6, .col-8 { grid-column: span 12; }
+        }
+
+        /* CONTROL ELEMENTS */
+        .control-group { margin-bottom: 25px; }
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+        }
+        .control-label b { color: var(--text-main); }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+        input[type=range]:hover::-webkit-slider-runnable-track { background: #333; }
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: var(--accent-main);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+            transition: transform 0.1s;
+        }
+        input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
+
+        /* EDUCATIONAL TOOLTIPS */
+        .term-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: help;
+            color: var(--info);
+        }
+        .term-tooltip i { font-size: 12px; }
+        .term-tooltip .tooltip-content {
+            visibility: hidden;
+            width: 280px;
+            background-color: #111;
+            color: #ddd;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 150%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+            border: 1px solid var(--info);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+            font-size: 11px;
+            line-height: 1.5;
+            font-weight: normal;
+            pointer-events: none;
+        }
+        .term-tooltip .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--info) transparent transparent transparent;
+        }
+        .term-tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+            bottom: 125%;
+        }
+        .tooltip-content strong { color: #fff; display: block; margin-bottom: 4px; font-size: 12px; }
+        .tooltip-impact { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #333; color: var(--accent-light); }
+
+        /* METRIC CARDS */
+        .metric-card {
+            background: #050505;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #111;
+            text-align: center;
+            position: relative;
+        }
+        .metric-val { font-size: 20px; font-weight: 700; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; transition: color 0.3s; }
+        .metric-name { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 4px;}
+
+        /* TIME ALLOCATION NODES */
+        .allocation-container { display: flex; flex-direction: column; gap: 12px; }
+
+        /* BUTTONS */
+        .btn-advance {
+            background: var(--accent-main);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+            transition: all 0.2s;
+        }
+        .btn-advance:hover { background: var(--accent-light); box-shadow: 0 0 25px rgba(0, 255, 102, 0.4); transform: translateY(-1px); }
+        .btn-advance:active { transform: translateY(1px); }
+
+        /* STATUS TAGS */
+        .status-tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; transition: all 0.3s; }
+        .status-danger { background: rgba(255, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .status-warn { background: rgba(255, 170, 0, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .status-ok { background: rgba(0, 255, 102, 0.1); color: var(--accent-main); border: 1px solid var(--accent-main); }
+
+        /* ADVISOR PANEL (NEW) */
+        .advisor-panel {
+            background: linear-gradient(180deg, #0a1128 0%, #050505 100%);
+            border: 1px solid #1a3a5a;
+            display: flex;
+            flex-direction: column;
+        }
+        .advisor-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--info);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1a3a5a;
+        }
+        .advisor-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .insight-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid var(--info);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #ddd;
+            animation: slideIn 0.3s ease-out;
+        }
+        .insight-card.danger { border-left-color: var(--danger); }
+        .insight-card.warning { border-left-color: var(--warning); }
+        .insight-card.success { border-left-color: var(--accent-main); }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* MACRO CARDS */
+        .macro-card {
+            flex: 1;
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s;
+        }
+        .macro-card:hover { border-color: #333; }
+        .macro-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #1a1a1a;
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span class="logo-text">MOMMA'S<span class="highlight"> M.</span></span>
+    </div>
+
+    <div class="user-profile">
+        <div class="avatar">
+            <img src="{{ user.profile_picture.url }}">
+        </div>
+        <div class="user-info"><h4>{{ request.user.username }}</h4></div>
+        <i class="fa-solid fa-chevron-down user-chevron"></i>
+    </div>
+
+    <nav class="nav-menu">
+        <a href="/data" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-chart-line"></i><span
+                    class="nav-item-text">Real world data</span></div>
+        </a>
+        <a href="/panel" class="nav-link active">
+            <div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span>
+            </div>
+        </a>
+        <a href="/expenses" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span>
+            </div>
+        </a>
+        <a href="/sim" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div>
+        </a>
+        <a href="/ai" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div>
+        </a>
+    </nav>
+
+    <div style="margin-top:auto;">
+        <a href="#" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div>
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+    <div class="header">
+        <h1>CONTROL PANEL <span class="header-badge"><i class="fa-solid fa-graduation-cap"></i> INTERACTIVE LEARNING MODE</span>
+        </h1>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div style="text-align:right;">
+                <div style="font-size:10px; color:var(--text-muted);">CURRENT MONTH</div>
+                <div id="display-month" style="font-size:22px; font-weight:700; color: var(--accent-main);">1</div>
+            </div>
+            <button class="btn-advance" onclick="advanceMonth()">Process Financial Cycle <i
+                    class="fa-solid fa-forward-step" style="margin-left: 5px;"></i></button>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- PERSONAL FINANCE -->
+        <div class="panel col-4">
+            <div class="panel-title">Personal Finance <i class="fa-solid fa-wallet"></i></div>
+
+            <div class="control-group">
+                <div class="control-label">
+                        <span class="term-tooltip">Savings Rate <i class="fa-solid fa-circle-info"></i>
+                            <span class="tooltip-content">
+                                <strong>Savings Rate</strong>
+                                The percentage of your net income that you put away rather than spend immediately.
+                                <div class="tooltip-impact"><b>Game Impact:</b> Higher rates build your 'Runway' faster, protecting you against sudden economic shocks, but lower short-term happiness.</div>
+                            </span>
+                        </span>
+                    <b id="val-savings">20%</b>
+                </div>
+                <input type="range" id="input-savings" min="0" max="80" value="20" oninput="updateSimulation()">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                        <span class="term-tooltip">Lifestyle Intensity <i class="fa-solid fa-circle-info"></i>
+                            <span class="tooltip-content">
+                                <strong>Lifestyle Intensity (Inflation Sensitive)</strong>
+                                Your baseline standard of living, encompassing housing, dining, and luxury spending.
+                                <div class="tooltip-impact"><b>Game Impact:</b> Directly increases your monthly cash burn. Highly vulnerable to Macro Inflation. Boosts baseline happiness.</div>
+                            </span>
+                        </span>
+                    <b id="val-lifestyle">Level 2</b>
+                </div>
+                <input type="range" id="input-lifestyle" min="1" max="5" value="2" oninput="updateSimulation()">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                        <span class="term-tooltip">Debt Focus <i class="fa-solid fa-circle-info"></i>
+                            <span class="tooltip-content">
+                                <strong>Debt Amortization Focus</strong>
+                                How aggressively you use surplus cash to pay down existing liabilities (loans, credit cards).
+                                <div class="tooltip-impact"><b>Game Impact:</b> High focus reduces the compounding damage of high Central Bank Interest Rates, but leaves less cash for investments.</div>
+                            </span>
+                        </span>
+                    <b id="val-debt">Standard</b>
+                </div>
+                <input type="range" id="input-debt" min="0" max="100" value="20" oninput="updateSimulation()">
+            </div>
+
+            <div style="margin-top:30px; padding:15px; border-radius:8px; background: rgba(0,0,0,0.5); border: 1px dashed #333;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px; display:flex; justify-content:space-between;">
+                    SYSTEM STATUS
+                    <div id="system-status-tag" class="status-tag status-ok">STABLE</div>
+                </div>
+                <p id="system-warning" style="font-size:11px; margin-top:10px; color:#aaa; line-height:1.4;">All
+                    micro-economic parameters are within standard safety margins.</p>
+            </div>
+        </div>
+
+        <!-- STRATEGIC ALLOCATION -->
+        <div class="panel col-4">
+            <div class="panel-title">Strategic Allocation <i class="fa-solid fa-brain"></i></div>
+
+            <div class="control-group">
+                <div class="control-label">
+                        <span class="term-tooltip">Asset Risk Profile <i class="fa-solid fa-circle-info"></i>
+                            <span class="tooltip-content">
+                                <strong>Asset Allocation Risk</strong>
+                                The mix of safe assets (bonds/cash) vs. volatile assets (stocks/crypto) in your portfolio.
+                                <div class="tooltip-impact"><b>Game Impact:</b> High risk significantly increases expected ROI during GDP growth, but exposes you to devastating losses during economic downturns.</div>
+                            </span>
+                        </span>
+                    <b id="val-risk">Defensive</b>
+                </div>
+                <input type="range" id="input-risk" min="0" max="100" value="20" oninput="updateSimulation()">
+            </div>
+
+            <div class="panel-title" style="margin-top:30px;">Time Distribution (Zero-Sum) <i
+                    class="fa-solid fa-clock"></i></div>
+            <div class="allocation-container">
+                <div class="control-group">
+                    <div class="control-label">
+                            <span class="term-tooltip">Career Focus <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Active Income Generation</strong>
+                                    Time spent directly earning money at a job or business.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> Directly multiplies your Base Salary to generate Monthly Net Income.</div>
+                                </span>
+                            </span>
+                        <b id="val-time-career">40%</b>
+                    </div>
+                    <input type="range" id="input-time-career" min="0" max="100" value="40"
+                           oninput="handleTimeBalance('career')">
+                </div>
+                <div class="control-group">
+                    <div class="control-label">
+                            <span class="term-tooltip">Skill Learning <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Human Capital Investment</strong>
+                                    Time spent acquiring new skills or education.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> Permanently increases your 'Skill Level' multiplier over time, compounding future earning power.</div>
+                                </span>
+                            </span>
+                        <b id="val-time-learn">20%</b>
+                    </div>
+                    <input type="range" id="input-time-learn" min="0" max="100" value="20"
+                           oninput="handleTimeBalance('learn')">
+                </div>
+                <div class="control-group">
+                    <div class="control-label">
+                            <span class="term-tooltip">Leisure / Rest <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Mental Capital Preservation</strong>
+                                    Time spent recovering, resting, and enjoying life.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> Crucial for maintaining Happiness. Low happiness results in catastrophic productivity crashes.</div>
+                                </span>
+                            </span>
+                        <b id="val-time-leisure">40%</b>
+                    </div>
+                    <input type="range" id="input-time-leisure" min="0" max="100" value="40"
+                           oninput="handleTimeBalance('leisure')">
+                </div>
+            </div>
+        </div>
+
+        <!-- FORECASTED RESULTS -->
+        <div class="panel col-4">
+            <div class="panel-title">Forecasted Results <i class="fa-solid fa-chart-line"></i></div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+                <div class="metric-card">
+                    <div id="stat-net-income" class="metric-val">$4,250</div>
+                    <div class="metric-name">
+                            <span class="term-tooltip">Monthly Net <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Net Cash Flow</strong>
+                                    Total earnings minus taxes and lifestyle costs.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> This amount is added to your total Cash reserves every time you Process a Cycle. If negative, you accrue debt.</div>
+                                </span>
+                            </span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div id="stat-happiness" class="metric-val">68%</div>
+                    <div class="metric-name">
+                            <span class="term-tooltip">Happiness <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Psychological Well-being</strong>
+                                    Driven by lifestyle, leisure, and financial stress.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> Dropping below 30% triggers "Burnout," which randomly halves your active income.</div>
+                                </span>
+                            </span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div id="stat-roi" class="metric-val">4.2%</div>
+                    <div class="metric-name">
+                            <span class="term-tooltip">Real ROI <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Real Return on Investment</strong>
+                                    Your portfolio's expected yield minus the rate of inflation.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> Determines how fast your money grows passively. If inflation outpaces returns, your Real ROI is negative (losing purchasing power).</div>
+                                </span>
+                            </span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div id="stat-burn" class="metric-val">12 mo</div>
+                    <div class="metric-name">
+                            <span class="term-tooltip">Runway <i class="fa-solid fa-circle-info"></i>
+                                <span class="tooltip-content">
+                                    <strong>Financial Runway</strong>
+                                    Cash Reserves divided by Monthly Lifestyle Cost.
+                                    <div class="tooltip-impact"><b>Game Impact:</b> How many months you can survive with zero income before bankruptcy.</div>
+                                </span>
+                            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.5); border-radius: 8px; padding: 10px; border: 1px solid #1a1a1a;">
+                <div style="font-size:10px; color:var(--text-muted); margin-bottom: 5px;">TOTAL CASH RESERVES</div>
+                <div id="stat-total-cash"
+                     style="font-size:24px; font-weight:700; color: var(--accent-main); font-family: 'Montserrat';">
+                    $12,500
+                </div>
+            </div>
+        </div>
+
+        <!-- MACRO ENVIRONMENT -->
+        <div class="panel col-8">
+            <div class="panel-title">Macro-Economic Environment (Move sliders to see impact) <i
+                    class="fa-solid fa-earth-americas"></i></div>
+
+            <div id="macro-cards-container"
+                 style="display:flex; justify-content: space-between; gap:15px; height: calc(100% - 40px);">
+
+                <div class="macro-card">
+                    <div class="control-group" style="margin-bottom: 0;">
+                        <div class="control-label">
+                                <span class="term-tooltip">Inflation Rate <i class="fa-solid fa-circle-info"></i>
+                                    <span class="tooltip-content" style="bottom: auto; top: 100%; margin-top: 10px;">
+                                        <strong>Inflation Rate</strong>
+                                        The invisible tax. The rate at which fiat currency loses its value over time as the supply expands.
+                                    </span>
+                                </span>
+                            <b id="val-macro-inflation" style="color: var(--danger);">2.4%</b>
+                        </div>
+                        <input type="range" id="input-macro-inflation" min="-2" max="15" step="0.1" value="2.4"
+                               oninput="updateMacro()">
+                    </div>
+                    <div class="macro-desc">
+                        <strong style="color: var(--danger);">Economic Effect:</strong> Increases the cost of your <b>Lifestyle</b>
+                        immediately. Erodes the 'Real' value of your <b>Cash Returns (ROI)</b>. High inflation penalizes
+                        savers and rewards debtors (if fixed rate).
+                    </div>
+                </div>
+
+                <div class="macro-card">
+                    <div class="control-group" style="margin-bottom: 0;">
+                        <div class="control-label">
+                                <span class="term-tooltip">Central Bank Rate <i class="fa-solid fa-circle-info"></i>
+                                    <span class="tooltip-content" style="bottom: auto; top: 100%; margin-top: 10px;">
+                                        <strong>Interest Rate (Fed Funds)</strong>
+                                        The cost of borrowing money. Central banks raise this to cool down inflation by destroying demand.
+                                    </span>
+                                </span>
+                            <b id="val-macro-rates" style="color: var(--info);">5.25%</b>
+                        </div>
+                        <input type="range" id="input-macro-rates" min="0" max="12" step="0.25" value="5.25"
+                               oninput="updateMacro()">
+                    </div>
+                    <div class="macro-desc">
+                        <strong style="color: var(--info);">Economic Effect:</strong> Increases the baseline, risk-free
+                        yield of your investments (boosting <b>ROI</b>). However, it massively increases the penalty if
+                        you carry <b>Debt</b>.
+                    </div>
+                </div>
+
+                <div class="macro-card">
+                    <div class="control-group" style="margin-bottom: 0;">
+                        <div class="control-label">
+                                <span class="term-tooltip">GDP Growth <i class="fa-solid fa-circle-info"></i>
+                                    <span class="tooltip-content" style="bottom: auto; top: 100%; margin-top: 10px;">
+                                        <strong>Gross Domestic Product</strong>
+                                        The total value of goods produced and services provided in a country. Negative GDP = Recession.
+                                    </span>
+                                </span>
+                            <b id="val-macro-gdp" style="color: var(--accent-main);">2.0%</b>
+                        </div>
+                        <input type="range" id="input-macro-gdp" min="-5" max="10" step="0.1" value="2.0"
+                               oninput="updateMacro()">
+                    </div>
+                    <div class="macro-desc">
+                        <strong style="color: var(--accent-main);">Economic Effect:</strong> A booming economy amplifies
+                        the returns on high-<b>Risk</b> assets. A shrinking economy (Recession) increases the chance of
+                        sudden <b>Market Shocks</b> and job loss.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- AI ECONOMIC ADVISOR -->
+        <div class="panel col-4 advisor-panel">
+            <div class="advisor-header">
+                <i class="fa-solid fa-robot"></i> Economic Tutor AI Analysis
+            </div>
+            <div class="advisor-content" id="advisor-insights">
+                <!-- Insights injected by JS -->
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    // --- DATA MODEL & INITIAL STATE ---
+    let gameState = {
+        month: 1,
+        cash: 12500,
+        happiness: 70,
+        skillLevel: 1.0,
+        baseSalary: 5000,
+
+        // Macro-Economics
+        inflation: 0.024,
+        interestRate: 0.0525,
+        gdpGrowth: 0.02,
+
+        // Player Inputs
+        inputs: {
+            savingsRate: 20,
+            lifestyle: 2,
+            debtFocus: 20,
+            risk: 20,
+            time: {
+                career: 40,
+                learn: 20,
+                leisure: 40
+            }
+        }
+    };
+
+    const formatMoney = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+
+    // --- CORE LOGIC: INTERDEPENDENCY ENGINE ---
+
+    function updateMacro() {
+        // Update the game state with new slider values
+        gameState.inflation = parseFloat(document.getElementById('input-macro-inflation').value) / 100;
+        gameState.interestRate = parseFloat(document.getElementById('input-macro-rates').value) / 100;
+        gameState.gdpGrowth = parseFloat(document.getElementById('input-macro-gdp').value) / 100;
+
+        // Update the UI Labels
+        document.getElementById('val-macro-inflation').innerText = (gameState.inflation * 100).toFixed(1) + "%";
+        document.getElementById('val-macro-rates').innerText = (gameState.interestRate * 100).toFixed(2) + "%";
+        document.getElementById('val-macro-gdp').innerText = (gameState.gdpGrowth * 100).toFixed(1) + "%";
+
+        // Trigger simulation update to reflect new macro environment on personal finances
+        updateSimulation();
+    }
+
+    function updateSimulation() {
+        const i = gameState.inputs;
+
+        // Read Inputs
+        i.savingsRate = parseInt(document.getElementById('input-savings').value);
+        i.lifestyle = parseInt(document.getElementById('input-lifestyle').value);
+        i.debtFocus = parseInt(document.getElementById('input-debt').value);
+        i.risk = parseInt(document.getElementById('input-risk').value);
+
+        // 1. Calculate Happiness Impacts
+        let happinessScore = 50
+            + (i.time.leisure * 0.5)
+            + (i.lifestyle * 8)
+            - (i.savingsRate * 0.4)
+            - (i.risk * 0.2);
+
+        gameState.happiness = Math.min(100, Math.max(0, happinessScore));
+
+        // 2. Calculate ROI Impacts (Now influenced by Interest Rates and GDP)
+        // Real ROI Equation for the simulation
+        let baseYield = (gameState.interestRate * 100);
+        let riskPremium = (i.risk * 0.15) * (1 + gameState.gdpGrowth);
+        let expectedROI = baseYield + riskPremium - (gameState.inflation * 100);
+
+        // 3. Calculate Monthly Cash Flow
+        let grossIncome = gameState.baseSalary * (i.time.career / 50) * gameState.skillLevel;
+        let taxes = grossIncome * 0.22;
+
+        // Lifestyle cost is directly impacted by inflation (purchasing power loss)
+        let lifestyleCost = (i.lifestyle * 800) * (1 + gameState.inflation);
+        let savingsAmount = (grossIncome - taxes) * (i.savingsRate / 100);
+        let disposable = grossIncome - taxes - lifestyleCost - savingsAmount;
+
+        // 4. Update UI Text
+        document.getElementById('val-savings').innerText = i.savingsRate + "%";
+        document.getElementById('val-lifestyle').innerText = "Level " + i.lifestyle;
+        document.getElementById('val-risk').innerText = i.risk > 70 ? "Aggressive" : (i.risk > 30 ? "Balanced" : "Defensive");
+        document.getElementById('val-debt').innerText = i.debtFocus > 70 ? "Aggressive" : "Standard";
+
+        const netIncomeEl = document.getElementById('stat-net-income');
+        netIncomeEl.innerText = formatMoney(disposable);
+        netIncomeEl.style.color = disposable >= 0 ? "var(--text-main)" : "var(--danger)";
+
+        document.getElementById('stat-happiness').innerText = Math.round(gameState.happiness) + "%";
+
+        const roiEl = document.getElementById('stat-roi');
+        roiEl.innerText = expectedROI.toFixed(1) + "%";
+        roiEl.style.color = expectedROI >= 0 ? "var(--accent-main)" : "var(--danger)";
+
+        let runway = Math.floor(gameState.cash / Math.max(1, lifestyleCost));
+        document.getElementById('stat-burn').innerText = runway + " mo";
+        document.getElementById('stat-total-cash').innerText = formatMoney(gameState.cash);
+
+        // 5. Generate AI Insights based on current parameters
+        generateInsights(disposable, expectedROI, runway);
+    }
+
+    function generateInsights(netIncome, expectedROI, runway) {
+        const container = document.getElementById('advisor-insights');
+        container.innerHTML = ''; // Clear old insights
+
+        const addInsight = (msg, type = 'info') => {
+            const div = document.createElement('div');
+            div.className = `insight-card ${type}`;
+            div.innerHTML = msg;
+            container.appendChild(div);
+        };
+
+        let issuesFound = 0;
+
+        // Insight 1: Real Return vs Inflation
+        if (expectedROI < 0) {
+            addInsight(`<b>Negative Real Return:</b> Inflation (${(gameState.inflation*100).toFixed(1)}%) is destroying your purchasing power faster than your assets are growing. You are losing wealth holding safe assets.`, 'danger');
+            issuesFound++;
+        } else if (expectedROI > 8) {
+            addInsight(`<b>High Growth Profile:</b> You are targeting aggressive yields. Ensure you have the stomach for volatility during GDP downturns.`, 'warning');
+        }
+
+        // Insight 2: GDP and Risk
+        if (gameState.gdpGrowth < 0) {
+            addInsight(`<b>Recession Environment:</b> The economy is contracting (GDP < 0). Corporate profits fall, meaning high-risk assets (like stocks) are highly likely to suffer sudden, severe losses.`, 'danger');
+            issuesFound++;
+        }
+
+        // Insight 3: Cashflow & Runway
+        if (netIncome < 0) {
+            addInsight(`<b>Deficit Spending:</b> You are spending more than you earn. Your lifestyle requires borrowing. This leads to compounding debt in high interest rate environments.`, 'danger');
+            issuesFound++;
+        } else if (runway < 3) {
+            addInsight(`<b>Dangerously Low Runway:</b> You only have ${runway} months of cash left. An economic shock could force you into high-interest debt immediately. Increase your savings rate.`, 'warning');
+            issuesFound++;
+        }
+
+        // Insight 4: Human Capital vs Inflation
+        if (gameState.inflation > 0.05 && gameState.inputs.time.learn < 10) {
+            addInsight(`<b>Stagnant Wages vs Inflation:</b> High inflation makes life more expensive, but you aren't spending time learning new skills to increase your income. Your standard of living will slowly drop.`, 'warning');
+            issuesFound++;
+        }
+
+        // Success feedback
+        if (issuesFound === 0 && netIncome > 0 && expectedROI > 0) {
+            addInsight(`<b>Optimal Configuration:</b> Cash flow is positive, assets are outpacing inflation, and runway is healthy. Process cycles to compound your wealth.`, 'success');
+        }
+
+        // Update Status Tag
+        const statusTag = document.getElementById('system-status-tag');
+        const statusWarn = document.getElementById('system-warning');
+
+        if (gameState.happiness < 30) {
+            statusTag.className = "status-tag status-danger";
+            statusTag.innerText = "BURNOUT RISK";
+            statusWarn.innerText = "Low leisure time is causing extreme stress. Sudden income drops imminent.";
+        } else if (netIncome < 0) {
+            statusTag.className = "status-tag status-danger";
+            statusTag.innerText = "CASH BLEED";
+            statusWarn.innerText = "Structural deficit. You must lower lifestyle or increase income.";
+        } else if (issuesFound > 0) {
+            statusTag.className = "status-tag status-warn";
+            statusTag.innerText = "SUB-OPTIMAL";
+            statusWarn.innerText = "Read the AI Tutor insights to resolve economic inefficiencies.";
+        } else {
+            statusTag.className = "status-tag status-ok";
+            statusTag.innerText = "STABLE & GROWING";
+            statusWarn.innerText = "Your personal economy is mathematically sound.";
+        }
+    }
+
+    // Handle Time Balancing (The sum must always be 100)
+    function handleTimeBalance(changed) {
+        let career = parseInt(document.getElementById('input-time-career').value);
+        let learn = parseInt(document.getElementById('input-time-learn').value);
+        let leisure = parseInt(document.getElementById('input-time-leisure').value);
+
+        let total = career + learn + leisure;
+
+        if (total !== 100) {
+            let diff = total - 100;
+            if (changed === 'career') {
+                document.getElementById('input-time-learn').value = Math.max(0, learn - (diff/2));
+                document.getElementById('input-time-leisure').value = Math.max(0, leisure - (diff/2));
+            } else if (changed === 'learn') {
+                document.getElementById('input-time-career').value = Math.max(0, career - (diff/2));
+                document.getElementById('input-time-leisure').value = Math.max(0, leisure - (diff/2));
+            } else {
+                document.getElementById('input-time-career').value = Math.max(0, career - (diff/2));
+                document.getElementById('input-time-learn').value = Math.max(0, learn - (diff/2));
+            }
+        }
+
+        gameState.inputs.time.career = parseInt(document.getElementById('input-time-career').value);
+        gameState.inputs.time.learn = parseInt(document.getElementById('input-time-learn').value);
+        gameState.inputs.time.leisure = parseInt(document.getElementById('input-time-leisure').value);
+
+        document.getElementById('val-time-career').innerText = gameState.inputs.time.career + "%";
+        document.getElementById('val-time-learn').innerText = gameState.inputs.time.learn + "%";
+        document.getElementById('val-time-leisure').innerText = gameState.inputs.time.leisure + "%";
+
+        updateSimulation();
+    }
+
+    function advanceMonth() {
+        gameState.month++;
+        document.getElementById('display-month').innerText = gameState.month;
+
+        // Visual feedback on advance
+        const displayMonth = document.getElementById('display-month');
+        displayMonth.style.transform = "scale(1.2)";
+        setTimeout(() => displayMonth.style.transform = "scale(1)", 200);
+
+        // Process financials
+        let res = calculateCycleResults();
+        gameState.cash += res.net;
+
+        // Skill compounding (learning time permanently boosts salary multiplier)
+        gameState.skillLevel += (gameState.inputs.time.learn * 0.0015);
+
+        // Interactive Market Events based on macroeconomic indicators
+        triggerMarketEvents();
+
+        updateSimulation();
+    }
+
+    function triggerMarketEvents() {
+        // High Risk + Recession (Negative GDP) = High chance of portfolio loss
+        if (gameState.inputs.risk > 50 && gameState.gdpGrowth < 0 && Math.random() > 0.4) {
+            let loss = gameState.cash * (gameState.inputs.risk / 200); // lose up to half cash depending on risk
+            gameState.cash -= loss;
+            flashScreen('rgba(255, 68, 68, 0.1)'); // Flash red
+            showTemporaryMessage(`Recession Shock! High-risk assets crashed. Lost ${formatMoney(loss)}`);
+        }
+
+        // High Inflation + High Salary = Stealth tax on savings, but maybe a raise
+        if (gameState.inflation > 0.05 && Math.random() > 0.8) {
+            gameState.baseSalary *= (1 + (gameState.inflation / 2));
+            showTemporaryMessage("Cost of Living Adjustment: Base salary slightly increased, but inflation still eats away at cash.");
+        }
+
+        // Burnout Mechanic
+        if (gameState.happiness < 25) {
+            gameState.baseSalary *= 0.90; // Permanent dent to earning power
+            flashScreen('rgba(255, 170, 0, 0.1)'); // Flash orange
+            showTemporaryMessage("Severe Burnout! Productivity plummeted. Earnings capacity permanently damaged.");
+        }
+    }
+
+    function calculateCycleResults() {
+        let gross = gameState.baseSalary * (gameState.inputs.time.career / 50) * gameState.skillLevel;
+        let taxes = gross * 0.22;
+        let lifestyle = (gameState.inputs.lifestyle * 800) * (1 + gameState.inflation);
+        return {
+            net: gross - taxes - lifestyle
+        };
+    }
+
+    // Utility: Flash screen for visceral feedback
+    function flashScreen(color) {
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0'; overlay.style.left = '0';
+        overlay.style.width = '100vw'; overlay.style.height = '100vh';
+        overlay.style.backgroundColor = color;
+        overlay.style.zIndex = '9999';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.transition = 'opacity 0.5s ease-out';
+        document.body.appendChild(overlay);
+
+        setTimeout(() => { overlay.style.opacity = '0'; }, 50);
+        setTimeout(() => { document.body.removeChild(overlay); }, 550);
+    }
+
+    // Utility: Show floating temporary message
+    function showTemporaryMessage(msg) {
+        const container = document.getElementById('advisor-insights');
+        const div = document.createElement('div');
+        div.className = `insight-card danger`;
+        div.style.borderLeftColor = 'var(--danger)';
+        div.innerHTML = `<b>MARKET EVENT:</b> ${msg}`;
+        container.insertBefore(div, container.firstChild);
+    }
+
+    // Initialize
+    updateMacro();
+
+</script>
+</body>
+
+</html>

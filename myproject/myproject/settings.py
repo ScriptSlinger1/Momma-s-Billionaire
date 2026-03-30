@@ -120,6 +120,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/uploads'
+AUTH_USER_MODEL = 'myapp.CustomUserModel'
 LOGIN_URL = reverse_lazy('myapp:login')
 LOGIN_REDIRECT_URL = reverse_lazy('myapp:ai')
 

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MOMMA'S MILLIONAIRE | SIMULATOR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;500;600;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #050505;
+            --sidebar-collapsed: 75px;
+            --sidebar-expanded: 260px;
+            --panel-bg: #0d0d0d;
+            --panel-bg-hover: #141c14;
+            --text-main: #ffffff;
+            --text-muted: #8c8c8c;
+            --accent-main: #00ff66;
+            --accent-light: #b3ffcc;
+            --danger-main: #ff3366;
+            --border-color: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-collapsed);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 100;
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+        }
+
+        .sidebar:hover { width: var(--sidebar-expanded); }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            margin-bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .logo i { color: var(--accent-main); font-size: 20px; flex-shrink: 0; }
+        .logo-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+        .sidebar:hover .logo-text { opacity: 1; }
+        .logo-text .highlight { color: var(--accent-main); }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 0 8px 20px;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .avatar {
+            width: 40px;       /* control size */
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;  /* THIS is what actually makes it crop into a circle */
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* prevents stretching, keeps it clean */
+        }
+
+        .user-info { margin-left: 12px; opacity: 0; transition: opacity 0.2s 0.1s; }
+        .sidebar:hover .user-info { opacity: 1; }
+        .user-info h4 { font-size: 14px; font-weight: 500; }
+
+        .user-chevron {
+            margin-left: auto;
+            font-size: 10px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.2s 0.1s;
+            flex-shrink: 0;
+            padding-left: 8px;
+        }
+        .sidebar:hover .user-chevron { opacity: 1; }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-link { text-decoration: none; color: inherit; display: block; }
+        .nav-item {
+            padding: 12px 18px;
+            margin: 4px 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .nav-item i { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
+        .nav-item-text { margin-left: 14px; opacity: 0; transition: opacity 0.2s 0.1s; }
+        .sidebar:hover .nav-item-text { opacity: 1; }
+        .nav-link:hover .nav-item { background-color: var(--panel-bg-hover); color: var(--text-main); }
+        .nav-link.active .nav-item {
+            background: linear-gradient(90deg, rgba(0,255,102,0.15) 0%, rgba(0,255,102,0) 100%);
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-main);
+            padding-left: 15px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            width: 100%;
+            margin-left: var(--sidebar-collapsed);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--text-main); }
+        .header .age-badge { font-size: 14px; color: var(--text-muted); text-align: right; }
+        .header .age-badge span { font-size: 28px; font-weight: 800; color: var(--accent-main); display: block; line-height: 1;}
+
+        /* Grid Layouts */
+        .grid { display: grid; gap: 20px; }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 1100px) { .grid-cols-3 { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        .card-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 5px; letter-spacing: 1px; }
+        .card-value { font-size: 32px; font-weight: 800; }
+
+        .text-accent { color: var(--accent-main); }
+        .text-danger { color: var(--danger-main); }
+
+        /* Stats Grid inside Card */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 3px; }
+        .stat-item .val { font-size: 18px; font-weight: 600; }
+
+        /* Lists */
+        .asset-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .asset-item { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+        .asset-item:last-child { border-bottom: none; }
+        .asset-item span { font-size: 14px; }
+        .asset-item .val { font-family: monospace; font-weight: 600; }
+
+        /* Log Box */
+        .log-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; max-height: 500px; padding-right: 5px; }
+        .log-entry { font-family: monospace; font-size: 13px; padding: 8px 10px; border-radius: 4px; border-left: 3px solid var(--border-color); background: var(--bg-color); animation: fadeIn 0.3s; }
+        .log-entry.success { border-left-color: var(--accent-main); color: var(--accent-light); background: rgba(0, 255, 102, 0.05); }
+        .log-entry.danger { border-left-color: var(--danger-main); color: #ff99aa; background: rgba(255, 51, 102, 0.05); }
+        .log-entry.info { border-left-color: #3399ff; color: #99ccff; background: rgba(51, 153, 255, 0.05); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Decision Buttons */
+        .decision-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .decision-btn:hover { background: var(--panel-bg-hover); border-color: var(--accent-main); transform: translateY(-2px); }
+        .decision-icon { font-size: 24px; background: var(--panel-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .decision-btn:hover .decision-icon { color: var(--accent-main); border-color: var(--accent-main); }
+        .decision-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .decision-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: var(--border-color); }
+        .badge.accent { background: rgba(0, 255, 102, 0.1); color: var(--accent-main); }
+
+        /* Canvas Chart */
+        canvas { width: 100%; height: 80px; margin-top: 15px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color); }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal {
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            padding: 40px; border-radius: 16px; width: 400px; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,255,102,0.1);
+        }
+        .modal h2 { font-family: 'Montserrat'; font-size: 32px; margin-bottom: 10px; }
+        .modal p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+        .modal-btn {
+            background: var(--accent-main); color: #000; border: none;
+            padding: 15px 30px; font-size: 16px; font-weight: 700; border-radius: 8px;
+            cursor: pointer; width: 100%; transition: background 0.2s;
+        }
+        .modal-btn:hover { background: var(--accent-light); }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span class="logo-text">MOMMA'S<span class="highlight"> M.</span></span>
+    </div>
+
+    <div class="user-profile">
+        <div class="avatar">
+            <img src="{{ user.profile_picture.url }}">
+        </div>
+        <div class="user-info"><h4>{{ request.user.username }}</h4></div>
+        <i class="fa-solid fa-chevron-down user-chevron"></i>
+    </div>
+
+    <nav class="nav-menu">
+        <a href="/data" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-chart-line"></i><span
+                    class="nav-item-text">Real world data</span></div>
+        </a>
+        <a href="/panel" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-sliders"></i><span class="nav-item-text">Control panel</span>
+            </div>
+        </a>
+        <a href="/expenses" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-piggy-bank"></i><span class="nav-item-text">Smart savings</span>
+            </div>
+        </a>
+        <a href="/sim" class="nav-link active">
+            <div class="nav-item"><i class="fa-solid fa-flask"></i><span class="nav-item-text">Simulator</span></div>
+        </a>
+        <a href="/ai" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-robot"></i><span class="nav-item-text">AI assistant</span></div>
+        </a>
+    </nav>
+
+    <div style="margin-top:auto;">
+        <a href="#" class="nav-link">
+            <div class="nav-item"><i class="fa-solid fa-gear"></i><span class="nav-item-text">Setting</span></div>
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+    <div class="header">
+        <h1>SIMULATOR</h1>
+        <div class="age-badge">
+            CURRENT AGE
+            <span id="ui-age">18</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3">
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="card">
+                <div class="card-title">Total Net Worth</div>
+                <div id="ui-networth" class="card-value text-accent">$0</div>
+                <canvas id="nwChart"></canvas>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="margin-bottom: 15px;">Cashflow & Debt</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="label">Liquid Cash</div>
+                        <div id="ui-money" class="val text-main">$0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label text-danger">Total Debt</div>
+                        <div id="ui-debt" class="val text-danger">$0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Gross Income</div>
+                        <div id="ui-income" class="val text-accent">$0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Annual Expenses</div>
+                        <div id="ui-expenses" class="val text-danger">$0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span class="badge" id="ui-career">Student</span>
+                    <span class="badge accent" id="ui-market">Normal 📈</span>
+                </div>
+                <div class="card-title">Asset Portfolio</div>
+                <div class="asset-list">
+                    <div class="asset-item">
+                        <span><i class="fa-solid fa-arrow-trend-up" style="color:var(--text-muted); width: 20px;"></i> Stocks</span>
+                        <span id="ui-stocks" class="val">$0</span>
+                    </div>
+                    <div class="asset-item">
+                        <span><i class="fa-brands fa-bitcoin" style="color:var(--text-muted); width: 20px;"></i> Crypto</span>
+                        <span id="ui-crypto" class="val">$0</span>
+                    </div>
+                    <div class="asset-item">
+                        <span><i class="fa-solid fa-building" style="color:var(--text-muted); width: 20px;"></i> Real Estate</span>
+                        <span id="ui-realestate" class="val">$0</span>
+                    </div>
+                    <div class="asset-item">
+                        <span><i class="fa-solid fa-house" style="color:var(--text-muted); width: 20px;"></i> Home Equity</span>
+                        <span id="ui-home" class="val">$0</span>
+                    </div>
+                    <div class="asset-item">
+                        <span><i class="fa-solid fa-briefcase" style="color:var(--text-muted); width: 20px;"></i> Business</span>
+                        <span id="ui-business" class="val">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: span 1;">
+            <h2 style="font-size: 18px; margin-bottom: 5px;">Yearly Decisions</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Make choices to build wealth and
+                survive.</p>
+            <div id="decisions-container">
+            </div>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column;">
+            <h2 style="font-size: 18px; margin-bottom: 15px;"><i class="fa-solid fa-terminal"
+                                                                 style="color: var(--accent-main); margin-right: 8px;"></i>
+                System Log</h2>
+            <div id="log-container" class="log-container">
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div id="modal" class="modal-overlay">
+    <div class="modal">
+        <h2 id="modal-title" class="text-accent">Game Over</h2>
+        <p id="modal-desc">You went bankrupt.</p>
+
+        <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 25px; text-align: left;">
+            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Final Net Worth</div>
+            <div id="modal-nw"
+                 style="font-size: 28px; font-weight: 800; color: var(--accent-main); margin-bottom: 10px;">$0
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Retirement Age</div>
+            <div id="modal-age" style="font-size: 18px; font-weight: 600;">18</div>
+        </div>
+
+        <button onclick="initGame()" class="modal-btn">Reboot Simulation</button>
+    </div>
+</div>
+
+<script>
+    let state = {};
+    const MAX_AGE = 65;
+
+    function getInitialState() {
+        return {
+            age: 18,
+            career: 'High School Grad',
+            money: 5000,
+            income: 0,
+            expenses: {
+                rent: 8000,
+                food: 4000,
+                lifestyle: 1500,
+                transport: 1500,
+                family: 0,
+                propertyTax: 0
+            },
+            debt: 0,
+            assets: { stocks: 0, crypto: 0, realEstate: 0, business: 0, primaryHome: 0 },
+            education: 0,
+            marketCycle: 'Normal 📈',
+            nwHistory: [],
+            gameOver: false,
+            isMarried: false,
+            kids: 0,
+            unemployed: false
+        };
+    }
+
+    const formatMoney = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+    const calculateTotalExpenses = () => Object.values(state.expenses).reduce((acc, val) => acc + val, 0);
+    const calculateNetWorth = () => {
+        const assetsTotal = state.assets.stocks + state.assets.crypto + state.assets.realEstate + state.assets.business + state.assets.primaryHome;
+        return state.money + assetsTotal - state.debt;
+    };
+
+    function updateUI() {
+        document.getElementById('ui-age').innerText = state.age;
+        document.getElementById('ui-money').innerText = formatMoney(state.money);
+        document.getElementById('ui-debt').innerText = formatMoney(state.debt);
+        document.getElementById('ui-income').innerText = formatMoney(state.income);
+        document.getElementById('ui-expenses').innerText = formatMoney(calculateTotalExpenses());
+        document.getElementById('ui-career').innerText = state.career;
+        document.getElementById('ui-market').innerText = state.marketCycle;
+
+        document.getElementById('ui-stocks').innerText = formatMoney(state.assets.stocks);
+        document.getElementById('ui-crypto').innerText = formatMoney(state.assets.crypto);
+        document.getElementById('ui-realestate').innerText = formatMoney(state.assets.realEstate);
+        document.getElementById('ui-business').innerText = formatMoney(state.assets.business);
+        document.getElementById('ui-home').innerText = formatMoney(state.assets.primaryHome);
+
+        const nw = calculateNetWorth();
+        const nwEl = document.getElementById('ui-networth');
+        nwEl.innerText = formatMoney(nw);
+        nwEl.className = `card-value ${nw >= 0 ? 'text-accent' : 'text-danger'}`;
+
+        drawChart();
+        renderDecisions();
+    }
+
+    function logEvent(message, type = 'info') {
+        const container = document.getElementById('log-container');
+        const el = document.createElement('div');
+        el.className = `log-entry ${type}`;
+        el.innerHTML = `<span style="opacity:0.5; margin-right:5px;">[Age ${state.age}]</span> ${message}`;
+        container.appendChild(el);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function drawChart() {
+        const canvas = document.getElementById('nwChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+        ctx.clearRect(0, 0, width, height);
+        if (state.nwHistory.length < 2) return;
+
+        const maxNW = Math.max(...state.nwHistory, 10000);
+        const minNW = Math.min(...state.nwHistory, 0);
+        const range = maxNW - minNW || 1;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#00ff66';
+        ctx.lineWidth = 2;
+
+        state.nwHistory.forEach((nw, i) => {
+            const x = (i / (state.nwHistory.length - 1)) * width;
+            const y = height - ((nw - minNW) / range) * height;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        if (minNW < 0 && maxNW > 0) {
+            const zeroY = height - ((0 - minNW) / range) * height;
+            ctx.beginPath();
+            ctx.strokeStyle = '#ff3366';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.moveTo(0, zeroY);
+            ctx.lineTo(width, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    }
+
+    function getPossibleDecisions() {
+        let options = [];
+
+        if (state.unemployed) {
+            options.push({
+                title: "Hunt for a Job",
+                desc: "Apply to jobs to secure an income.",
+                icon: '<i class="fa-solid fa-briefcase"></i>',
+                action: () => {
+                    state.unemployed = false;
+                    state.career = 'General Labor';
+                    state.income = 40000;
+                    logEvent("You found a job in the regular workforce.", "info");
+                }
+            });
+        } else {
+            options.push({
+                title: "Work & Maintain",
+                desc: "Focus on your job and pay the bills.",
+                icon: '<i class="fa-solid fa-laptop-code"></i>',
+                action: () => { logEvent("Another year of the grind."); }
+            });
+        }
+
+        if (state.age >= 18 && state.age <= 22 && state.education === 0) {
+            options.push({
+                title: "Go to University",
+                desc: "Take on $35,000 in student debt for a high-paying degree.",
+                icon: '<i class="fa-solid fa-graduation-cap"></i>',
+                action: () => {
+                    state.debt += 35000;
+                    state.education = 1;
+                    state.career = 'College Student';
+                    logEvent("Enrolled in University. Acquired $35k in student debt.", "info");
+                }
+            });
+        }
+
+        if (state.money >= 10000 && state.expenses.transport < 4000) {
+            options.push({
+                title: "Buy a Vehicle",
+                desc: "Pay $10k down, take $15k debt. Transport costs rise.",
+                icon: '<i class="fa-solid fa-car"></i>',
+                action: () => {
+                    state.money -= 10000;
+                    state.debt += 15000;
+                    state.expenses.transport += 3000;
+                    logEvent("Bought a car. Mobility up, wallet down.", "info");
+                }
+            });
+        }
+
+        if (state.money >= 40000 && state.assets.primaryHome === 0) {
+            options.push({
+                title: "Buy a House",
+                desc: "Put $40k down on a $300k home. Replaces rent with mortgage.",
+                icon: '<i class="fa-solid fa-house"></i>',
+                action: () => {
+                    state.money -= 40000;
+                    state.assets.primaryHome += 300000;
+                    state.debt += 260000;
+                    state.expenses.rent = 0;
+                    state.expenses.propertyTax = 6000;
+                    logEvent("Bought a house! You have equity, but a massive mortgage.", "success");
+                }
+            });
+        }
+
+        // --- NEW: Buy Investment Real Estate ---
+        if (state.money >= 30000) {
+            options.push({
+                title: "Buy Investment Property",
+                desc: "Put $30k down on a $150k rental property. Generates 5% passive income.",
+                icon: '<i class="fa-solid fa-building"></i>',
+                action: () => {
+                    state.money -= 30000;
+                    state.assets.realEstate += 150000;
+                    state.debt += 120000; // Take out a mortgage for the rest
+                    logEvent("Purchased an investment property. Assets produce income!", "success");
+                }
+            });
+        }
+
+        // --- NEW: Start a Business ---
+        if (state.money >= 15000) {
+            options.push({
+                title: "Start a Business",
+                desc: "Invest $15,000 to launch a business. Cashflow will be highly variable.",
+                icon: '<i class="fa-solid fa-shop"></i>',
+                action: () => {
+                    state.money -= 15000;
+                    state.assets.business += 15000;
+                    logEvent("Launched a new business venture. It takes money to make money.", "success");
+                }
+            });
+        }
+
+        if (state.debt >= 5000 && state.money >= 5000) {
+            options.push({
+                title: "Aggressive Debt Payoff",
+                desc: "Throw $5,000 extra at your debt principal.",
+                icon: '<i class="fa-solid fa-credit-card"></i>',
+                action: () => {
+                    state.money -= 5000;
+                    state.debt -= 5000;
+                    logEvent("Paid down $5,000 of debt.", "success");
+                }
+            });
+        }
+
+        if (state.money >= 5000) {
+            options.push({
+                title: "Invest in Index Funds",
+                desc: "Put $5,000 into the stock market. Slow and steady.",
+                icon: '<i class="fa-solid fa-arrow-trend-up"></i>',
+                action: () => {
+                    state.money -= 5000;
+                    state.assets.stocks += 5000;
+                    logEvent("Invested $5,000 in index funds.", "info");
+                }
+            });
+        }
+
+        const defaultAction = options.shift();
+        options = options.sort(() => 0.5 - Math.random()).slice(0, 3);
+        return [defaultAction, ...options];
+    }
+
+    function renderDecisions() {
+        const container = document.getElementById('decisions-container');
+        container.innerHTML = '';
+        const choices = getPossibleDecisions();
+
+        choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = "decision-btn";
+            btn.innerHTML = `
+                <div class="decision-icon">${choice.icon}</div>
+                <div>
+                    <div class="decision-title">${choice.title}</div>
+                    <div class="decision-desc">${choice.desc}</div>
+                </div>
+            `;
+            btn.onclick = () => {
+                choice.action();
+                advanceYear();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function applyMarketReturns() {
+        const rand = Math.random();
+        if (rand < 0.15) state.marketCycle = 'Crash 📉';
+        else if (rand < 0.30) state.marketCycle = 'Boom 📈';
+        else state.marketCycle = 'Normal 📊';
+
+        let sRet = 0, cRet = 0, rRet = 0, bRet = 0, homeRet = 0;
+
+        if (state.marketCycle === 'Crash 📉') {
+            sRet = -0.25; cRet = -0.60; rRet = -0.10; homeRet = -0.05; bRet = -0.30;
+            logEvent("Market Correction! Asset values plummeted.", "danger");
+        } else if (state.marketCycle === 'Boom 📈') {
+            sRet = 0.20; cRet = 0.80; rRet = 0.12; homeRet = 0.08; bRet = 0.40;
+            logEvent("Economic Boom! Assets are thriving.", "success");
+        } else {
+            sRet = 0.08 + (Math.random() * 0.06 - 0.03);
+            cRet = (Math.random() * 1.5) - 0.5;
+            rRet = 0.05; homeRet = 0.04;
+            bRet = 0.10;
+        }
+
+        state.assets.stocks = Math.floor(state.assets.stocks * (1 + sRet));
+        state.assets.crypto = Math.floor(state.assets.crypto * (1 + cRet));
+        state.assets.realEstate = Math.floor(state.assets.realEstate * (1 + rRet));
+        state.assets.primaryHome = Math.floor(state.assets.primaryHome * (1 + homeRet));
+        state.assets.business = Math.floor(state.assets.business * (1 + bRet));
+    }
+
+    function handleCareer() {
+        if (state.unemployed || state.career === 'Entrepreneur') return;
+
+        if (state.age === 22) {
+            if (state.education === 1) {
+                state.career = 'Corporate Junior';
+                state.income = 75000;
+                logEvent("Graduated College! Landed a solid corporate job.", "success");
+            } else {
+                state.career = 'General Labor';
+                state.income = 40000;
+                logEvent("Entered full-time workforce.", "info");
+            }
+        } else if (state.age > 22 && state.career !== 'College Student') {
+            let oldIncome = state.income;
+
+            if (Math.random() < 0.25) {
+                state.income = Math.floor(state.income * 1.15);
+                if (state.career === 'Corporate Junior') state.career = 'Mid-Level Manager';
+                else if (state.career === 'Mid-Level Manager') state.career = 'Senior Executive';
+                else if (state.career === 'General Labor') state.career = 'Skilled Trade';
+                logEvent(`Promoted! Salary increased to ${formatMoney(state.income)}.`, "success");
+            } else {
+                state.income = Math.floor(state.income * 1.04);
+            }
+
+            if (state.income > oldIncome) {
+                let increase = state.income - oldIncome;
+                let creep = Math.floor(increase * 0.2);
+                state.expenses.lifestyle += creep;
+            }
+        }
+    }
+
+    function advanceYear() {
+        if (state.gameOver) return;
+        state.age++;
+
+        // 1. Unemployment check
+        if (!state.unemployed && state.career !== 'College Student' && Math.random() < 0.05) {
+            state.unemployed = true;
+            state.income = 0;
+            logEvent("You were laid off. Income dropped to $0.", "danger");
+        }
+
+        // 2. Inflation
+        let inflationRate = 0.02 + (Math.random() * 0.03);
+        state.expenses.food = Math.floor(state.expenses.food * (1 + inflationRate));
+        state.expenses.transport = Math.floor(state.expenses.transport * (1 + inflationRate));
+        state.expenses.lifestyle = Math.floor(state.expenses.lifestyle * (1 + inflationRate));
+        if(state.assets.primaryHome === 0) {
+            state.expenses.rent = Math.floor(state.expenses.rent * (1 + inflationRate));
+        }
+
+        // --- NEW: 3. Calculate Passive Income from Real Estate & Business ---
+        let rentalIncome = 0;
+        let businessProfit = 0;
+
+        if (state.assets.realEstate > 0) {
+            rentalIncome = Math.floor(state.assets.realEstate * 0.05); // 5% passive yield
+            logEvent(`Your Real Estate generated ${formatMoney(rentalIncome)} in rental income.`, "success");
+        }
+
+        if (state.assets.business > 0) {
+            // Business profit fluctuates between -5% loss to +20% gain
+            let yieldPercent = (Math.random() * 0.25) - 0.05;
+            businessProfit = Math.floor(state.assets.business * yieldPercent);
+            if (businessProfit >= 0) {
+                logEvent(`Your Business generated ${formatMoney(businessProfit)} in profit.`, "success");
+            } else {
+                logEvent(`Your Business lost ${formatMoney(Math.abs(businessProfit))} this year.`, "danger");
+            }
+        }
+
+        let totalPassiveIncome = rentalIncome + businessProfit;
+
+        // 4. Taxes (applied to total earnings)
+        let taxableIncome = state.income + Math.max(0, totalPassiveIncome);
+        let tax = taxableIncome * 0.15;
+        let netIncome = Math.floor(state.income - tax);
+
+        // 5. Market Appreciation/Depreciation
+        applyMarketReturns();
+
+        // 6. Debt Interest
+        if (state.debt > 0) state.debt = Math.floor(state.debt * 1.05);
+
+        // 7. Cashflow Resolution
+        let totalExp = calculateTotalExpenses();
+        let cashflow = netIncome + totalPassiveIncome - totalExp;
+
+        let debtPayment = 0;
+        if (state.debt > 0) {
+            debtPayment = Math.min(state.debt, Math.floor(state.debt * 0.05));
+            cashflow -= debtPayment;
+            state.debt -= debtPayment;
+        }
+
+        state.money += cashflow;
+
+        if (state.money < 0) {
+            const overdraft = Math.abs(state.money);
+            state.debt += Math.floor(overdraft * 1.15);
+            state.money = 0;
+            logEvent(`Overdraft! ${formatMoney(overdraft)} moved to debt with a 15% penalty.`, "danger");
+        }
+
+        handleCareer();
+
+        state.nwHistory.push(calculateNetWorth());
+        updateUI();
+
+        if (state.money <= 0 && state.debt > 300000 && state.income < state.debt * 0.05) {
+            endGame(false, "Crushed by debt. The system won.");
+        } else if (state.age >= MAX_AGE) {
+            endGame(true, "Retirement Age Reached! Simulation complete.");
+        }
+    }
+
+    function endGame(isWin, message) {
+        state.gameOver = true;
+        document.getElementById('modal').style.display = 'flex';
+        const titleEl = document.getElementById('modal-title');
+        titleEl.innerText = isWin ? "SURVIVED" : "BANKRUPT";
+        titleEl.style.color = isWin ? 'var(--accent-main)' : 'var(--danger-main)';
+        document.getElementById('modal-desc').innerText = message;
+        document.getElementById('modal-nw').innerText = formatMoney(calculateNetWorth());
+        document.getElementById('modal-age').innerText = state.age;
+    }
+
+    function initGame() {
+        state = getInitialState();
+        state.nwHistory.push(calculateNetWorth());
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('log-container').innerHTML = '';
+        logEvent("Simulation initialized. Age 18.", "info");
+        updateUI();
+    }
+
+    window.onload = initGame;
+</script>
+</body>
+</html>

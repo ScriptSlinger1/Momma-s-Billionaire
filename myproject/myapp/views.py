@@ -1,7 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from openai import OpenAI
 import json
-import requests
-
+from .forms import CustomUserCreationForm
 from dotenv import load_dotenv
 import os
 
@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 
 from django.db.models.functions import TruncMonth, TruncDay, TruncYear, TruncWeek
 from django.db.models import Sum
@@ -23,7 +22,6 @@ from django.urls import reverse_lazy
 
 from concurrent.futures import ThreadPoolExecutor
 from .models import Expense, Chat, Message
-
 
 # Create your views here.
 
@@ -38,19 +36,19 @@ class LandingPageView(TemplateView):
 
 class RegistrationView(CreateView):
     template_name = 'myapp/reg.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('myapp:login')
 
 
-class Dashboard(TemplateView):
+class Dashboard(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/dashboard.html'
 
 
-class RealWorldData(TemplateView):
+class RealWorldData(TemplateView, LoginRequiredMixin):
     template_name = 'myapp/real_world_data.html'
 
 
-class CreateAnExpense(CreateView):
+class CreateAnExpense(CreateView, LoginRequiredMixin):
     model = Expense
     fields = ['amount', 'category', 'details']
     template_name = 'myapp/create_expense.html'
@@ -136,13 +134,13 @@ def expenses_tracking(request):
     advice = None
 
     if request.method == "POST" and "analyze" in request.POST:
-        advice = get_ai_advice(
-            total=total,
-            category=list(category),
-            category_daily=list(category_daily),
-            category_weekly=list(category_weekly),
-            category_monthly=list(category_monthly)
-        )
+        advice = get_ai_advice(request,
+                               total=total,
+                               category=list(category),
+                               category_daily=list(category_daily),
+                               category_weekly=list(category_weekly),
+                               category_monthly=list(category_monthly)
+                               )
 
     return render(request, "myapp/expenses_tracking.html", {
         "total": round(total, 2),
@@ -160,7 +158,7 @@ def expenses_tracking(request):
 
 # AI EXPENSES ADVICE ----------<
 
-
+@login_required
 def get_ai_advice(total, category, category_daily, category_weekly, category_monthly):
     prompt = f"""
         You are a financial advisor analyzing a user's spending data.
@@ -170,6 +168,9 @@ def get_ai_advice(total, category, category_daily, category_weekly, category_mon
 
         Category totals:
         {category}
+
+        Daily category spending:
+        {category_daily}
 
         Monthly category spending:
         {category_monthly}
@@ -218,17 +219,14 @@ def chat_api(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-
     user_message = data.get('message', '').strip()
     chat_id = data.get('chat_id')
 
     use_web_search = data.get('web_search', False)
     image_b64 = data.get('image')
 
-
     if not user_message and not image_b64:
         return JsonResponse({'error': 'Empty message'}, status=400)
-
 
     if chat_id:
         chat = get_object_or_404(Chat, id=chat_id, user=request.user)
@@ -237,9 +235,7 @@ def chat_api(request):
         title = (user_message or 'Image')[:60] + ('…' if len(user_message) > 60 else '')
         chat = Chat.objects.create(user=request.user, title=title)
 
-
     Message.objects.create(chat=chat, role='user', content=user_message or '[image]')
-
 
     history = list(
         chat.messages.order_by('created_at')
@@ -310,7 +306,7 @@ def chat_api(request):
                     model='gpt-5.4-nano',
                     messages=messages,
                     temperature=0.7,
-                    max_completion_tokens=800,
+                    max_completion_tokens=2000,
                     stream=True,
                 )
 
@@ -326,7 +322,6 @@ def chat_api(request):
 
         finally:
             if full_reply:
-
                 Message.objects.create(
                     chat=chat,
                     role='assistant',
@@ -365,7 +360,7 @@ def chat_list(request):
 @csrf_exempt
 @require_POST
 def chat_new(request):
-    chat = Chat.objects.create(user=request.user, title = "New chat")
+    chat = Chat.objects.create(user=request.user, title="New chat")
 
     return JsonResponse({'id': chat.id, 'title': chat.title})
 
@@ -448,3 +443,14 @@ def country_data(request, country_code):
 
     return JsonResponse(result)
 
+
+class SimulatorView(TemplateView, LoginRequiredMixin):
+    template_name = 'myapp/simulator.html'
+
+
+class ControlPanelView(TemplateView, LoginRequiredMixin):
+    template_name = 'myapp/control_panel.html'
+
+
+class MyProfileView(TemplateView, LoginRequiredMixin):
+    template_name = 'myapp/myprofile.html'

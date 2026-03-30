@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 
 
@@ -12,16 +12,23 @@ class Category(models.Model):
         return self.name
 
 
+class CustomUserModel(AbstractUser):
+    username = models.CharField(max_length=15, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    bio = models.TextField()
+    profile_picture = models.ImageField(upload_to='uploads/profile_pics', null=True, blank=True)
+
 class Expense(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     details = models.CharField(max_length=150)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expenses')
+    user = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE, related_name='expenses')
 
 
 class Chat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default='New chat')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -31,4 +38,3 @@ class Message(models.Model):
     role = models.CharField(max_length=10)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-

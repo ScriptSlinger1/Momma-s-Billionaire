@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -249,16 +250,10 @@
              <span class="font-black tracking-tighter text-2xl uppercase text-black">Momma's<span class="text-green-600">.M</span></span>
         </div>
 
-         <div class="hidden lg:flex gap-14 text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">
-            <a href="#" class="hover:text-green-600 transition">Asset Intelligence</a>
-            <a href="#" class="hover:text-green-600 transition">Countact us</a>
-
-         </div>
-
          <div class="flex items-center gap-8">
-            <button class="btn-premium text-white px-10 py-4 rounded-full text-[11px] font-black uppercase tracking-widest">
+            <a href="{%url 'myapp:login'%}" class="btn-premium text-white px-10 py-4 rounded-full text-[11px] font-black uppercase tracking-widest">
                 GET STARTED
-            </button>
+            </a>
         </div>
 
      </div>
@@ -751,55 +746,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="section-divider"></div>
-        
-        <div class="grid lg:grid-cols-2 gap-20 items-center section-spacer">
-            <div class="lg:order-2 lg:pl-16">
-
-                <div class="px-3 py-1 bg-green-500/10 rounded-full inline-block mb-4">
-                    <span class="text-[10px] text-green-600 font-black uppercase tracking-widest">Fiscal Hub</span>
-                </div>
-
-                <span class="step-num block mb-4">06</span>
-                <h3 class="text-5xl font-black mb-8 leading-tight text-black">Smart Fiscal <br> Calendar</h3>
-                <p class="text-gray-600 text-xl font-light leading-relaxed mb-10">
-                            Your personal financial concierge. No missed deadlines. Integration with Google/Apple Calendar and automatic notifications of critical events.
-                </p>
-
-                <div class="space-y-4">
-
-                    <div class="flex items-center gap-4 text-sm font-bold text-gray-500">
-                        <span class="w-3 h-3 rounded-full bg-lime-400"></span> Ex-Dividend Dates
-                    </div>
-
-                    <div class="flex items-center gap-4 text-sm font-bold text-gray-500">
-                        <span class="w-3 h-3 rounded-full bg-green-500"></span> Tax Filing Reports
-                    </div>
-
-                    <div class="flex items-center gap-4 text-sm font-bold text-gray-500">
-                        <span class="w-3 h-3 rounded-full bg-emerald-800"></span> Options Expiration
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="lg:order-1 border-glow-wrapper">
-                <div class="card-inner min-h-[450px] flex flex-col justify-center">
-
-                    <div class="grid grid-cols-7 gap-3 text-center text-[11px] text-gray-500 mb-8 uppercase font-bold tracking-widest">
-                        <span>mon</span><span>tue</span><span>wed</span><span>thu</span><span>fri</span><span>sat</span><span>sun</span>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-3" id="calendarGrid"></div>
-
-                    <div class="mt-8 text-center">
-                        <p class="text-[10px] text-gray-500 font-mono uppercase">Click to mark / unmark dates</p>
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 </main>
@@ -844,15 +790,6 @@
                 <li><a href="#" class="hover:text-green-500">Security</a></li>
             </ul>
         </div>
-
-        <div>
-            <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-6">Terminal Access</h4>
-            <div class="flex flex-col gap-4">
-                <input type="text" placeholder="AUTH_KEY" class="bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-xs text-white focus:outline-none focus:border-green-500 transition">
-                <button class="bg-green-600 text-white font-black uppercase text-[10px] py-3 rounded-xl tracking-widest">Connect</button>
-            </div>
-        </div>
-                
     </div>
     <div class="pt-12 border-t border-white/5 flex flex-col md:row justify-between items-center gap-6">
         <p class="text-gray-600 text-[10px] uppercase font-bold tracking-[0.2em]">© 2026 Momma's Millionaire. All rights reserved.</p>
@@ -870,44 +807,6 @@
 
 
 <script>
-
-const calGrid = document.getElementById('calendarGrid');
-const markedDates = {
-    5: 'border-highlight-lime',
-    18: 'border-highlight-green',
-    25: 'border-highlight-green'
-};
-
-for (let i = 1; i <= 31; i++) {
-    const day = document.createElement('div');
-    day.className = 'cal-day';
-    day.innerText = i;
-            
-    if(markedDates[i]) {
-        day.classList.add(markedDates[i]);
-    }
-
-    day.addEventListener('click', () => {
-        if (day.classList.contains('active-marked')) {
-            day.classList.remove('active-marked');
-        } 
-                
-        else if (day.classList.contains('border-highlight-lime')) {
-            day.classList.remove('border-highlight-lime');
-            day.classList.add('active-marked');
-        } 
-                
-        else if (day.classList.contains('border-highlight-green')) {
-            day.classList.remove('border-highlight-green');
-            day.classList.add('border-highlight-lime');
-        } 
-                
-        else {
-            day.classList.add('border-highlight-green');
-        }});
-
-    calGrid.appendChild(day);
-}
 
 
 // --- Charts Initialization ---
