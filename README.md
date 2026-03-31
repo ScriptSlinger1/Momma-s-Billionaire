@@ -67,3 +67,18 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
+---
+
+## 👨‍💻 Authors
+
+This project was created and developed collaboratively by two authors:
+
+- **https://github.com/ScriptSlinger1** — Backend development, system architecture, AI integration  
+- **https://github.com/sedulix** — Frontend development, UI/UX design, financial logic implementation  
+
+---
+
+## 📌 Note
+
+Momma's Millionaire is an educational platform designed to help users improve financial literacy through simulation, analytics, and AI-driven recommendations.  
+The project demonstrates practical use of modern web technologies and real-world economic modeling concepts.
